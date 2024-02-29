@@ -1,0 +1,13 @@
+[package]
+name = "tarot"
+version = "1.0.0"
+upgrade_policy = "compatible"
+
+[addresses]
+admin = "0xdd8525a7312ca2f4885712d3bc4cd6e7df21c8d74308a9bf6d5c86bc3abcc196"
+master = "0xdd8525a7312ca2f4885712d3bc4cd6e7df21c8d74308a9bf6d5c86bc3abcc196"
+
+[dependencies]
+AptosFramework = { local = "../../aptos-core/aptos-move/framework/aptos-framework" }
+AptosStdlib = { local = "../../aptos-core/aptos-move/framework/aptos-stdlib" }
+AptosTokenObjects = { local = "../../aptos-core/aptos-move/framework/aptos-token-objects" }
