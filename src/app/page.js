@@ -9,8 +9,8 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [ques, setques] = useState(false);
   const [description, setDescription] = useState('');
-  const [number, setnumber] = useState(7);
-  const [position, setposition] = useState('reverse');
+  const [card, setcard] = useState('');
+  const [position, setposition] = useState('');
 
   const handledrawCard = async () => {
    
@@ -19,7 +19,7 @@ export default function Home() {
     const transaction = {
       arguments: [],
       function:
-      `${envdeletefucn}`,
+      `0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::draws_card_v2`,
       type: "entry_function_payload",
       type_arguments: [],
     };
@@ -28,7 +28,10 @@ export default function Home() {
       const pendingTransaction = await window.aptos.signAndSubmitTransaction(
         transaction
       );
-      window.location.reload();
+      console.log("pendingTransaction", pendingTransaction)
+      setcard(pendingTransaction.events[0].data.card);
+      setposition(pendingTransaction.events[0].data.position);
+      fetchRapLyrics();
     } catch (error) {
       console.error('Error drawing card:', error);
     }
@@ -43,7 +46,7 @@ export default function Home() {
 
     const requestBody = {
       inputFromClient: description,
-      outputCard: number,
+      outputCard: card,
       outputPosition: position
     };
 
@@ -108,7 +111,7 @@ export default function Home() {
         onChange={(e) => setDescription(e.target.value)} 
         className="p-2 rounded-lg w-full focus:outline-none"
       />
-    <button onClick={fetchRapLyrics} className="mt-20 bg-black rounded-lg py-2 px-8 text-white">Get my reading</button>
+    <button onClick={handledrawCard} className="mt-20 bg-black rounded-lg py-2 px-8 text-white">Get my reading</button>
     </>
     )}
       <div>
