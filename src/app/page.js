@@ -8,66 +8,67 @@ export default function Home() {
   const [drawnCard, setDrawnCard] = useState(null);
   const [loading, setLoading] = useState(false);
   const [ques, setques] = useState(false);
-  const [description, setDescription] = useState('');
-  const [card, setcard] = useState('');
-  const [position, setposition] = useState('');
+  const [description, setDescription] = useState("");
+  const [lyrics, setLyrics] = useState("");
 
-  const handledrawCard = async () => {
-   
-      setLoading(true);
-
-    const transaction = {
+  const handleDrawCardAndFetchreading = async () => {
+    setLoading(true);
+  
+    const drawTransaction = {
       arguments: [],
       function:
-      `0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::draws_card_v2`,
-      type: "entry_function_payload",
+        '0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::draws_card_v2',
+      type: 'entry_function_payload',
       type_arguments: [],
     };
-
+  
     try {
-      const pendingTransaction = await window.aptos.signAndSubmitTransaction(
-        transaction
-      );
-      console.log("pendingTransaction", pendingTransaction)
-      setcard(pendingTransaction.events[0].data.card);
-      setposition(pendingTransaction.events[0].data.position);
-      fetchRapLyrics();
-    } catch (error) {
-      console.error('Error drawing card:', error);
-    }
-     finally {
-      setLoading(false);
-   }
-  };
-
-  const [lyrics, setLyrics] = useState('');
-
-  const fetchRapLyrics = async () => {
-
-    const requestBody = {
-      inputFromClient: description,
-      outputCard: card,
-      outputPosition: position
-    };
-
-    try {
-      const response = await fetch('/api/openai', {
+      const drawResponse = await window.aptos.signAndSubmitTransaction(drawTransaction);
+      console.log('Drawn Card Transaction:', drawResponse);
+  
+      const card = drawResponse.events[0].data.card;
+      const position = drawResponse.events[0].data.position;
+  
+      const requestBody = {
+        inputFromClient: description,
+        outputCard: card,
+        outputPosition: position,
+      };
+  
+      const readingResponse = await fetch('/api/openai', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(requestBody)
+        body: JSON.stringify(requestBody),
       });
-
-      if (!response.ok) {
+  
+      if (!readingResponse.ok) {
         throw new Error('Failed to fetch rap lyrics');
       }
-      const data = await response.json();
-      setLyrics(data.lyrics);
+  
+      const readingData = await readingResponse.json();
+      setLyrics(readingData.lyrics);
+  
+      console.log('Data to send in mint:', card, position);
+  
+      const mintTransaction = {
+        arguments: [description, readingData.lyrics, card, position],
+        function:
+          '0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::mint_card',
+        type: 'entry_function_payload',
+        type_arguments: ['string', 'string', 'string', 'string'],
+      };
+  
+      const mintResponse = await window.aptos.signAndSubmitTransaction(mintTransaction);
+      console.log('Mint Card Transaction:', mintResponse);
     } catch (error) {
-      console.error('Error fetching rap lyrics:', error);
+      console.error('Error handling draw card and fetching rap lyrics:', error);
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24"
@@ -75,9 +76,6 @@ export default function Home() {
       backgroundImage: 'url(/tarot.avif)', // Path to your background image
       backgroundSize: 'cover', // Adjust as needed
       backgroundPosition: 'center', // Adjust as needed
-      // Add more background properties as needed
-      // width: '100vw', // Example width
-      // height: '100vh', // Example height
     }}>
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
         <p className="bg-white text-xl fixed left-0 top-0 flex w-full justify-center pb-6 backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:p-4">
@@ -87,10 +85,6 @@ export default function Home() {
             <Navbar/>
         </div>
       </div>
-
-      {/* <button className="text-xl bg-black text-white py-2 px-8 rounded-lg" onClick={handledrawCard}>        
-        Draw Card
-      </button> */}
 
       <div className="flex gap-10">
 <div>
@@ -111,7 +105,7 @@ export default function Home() {
         onChange={(e) => setDescription(e.target.value)} 
         className="p-2 rounded-lg w-full focus:outline-none"
       />
-    <button onClick={handledrawCard} className="mt-20 bg-black rounded-lg py-2 px-8 text-white">Get my reading</button>
+    <button onClick={handleDrawCardAndFetchreading} className="mt-20 bg-black rounded-lg py-2 px-8 text-white">Get my reading</button>
     </>
     )}
       <div>
