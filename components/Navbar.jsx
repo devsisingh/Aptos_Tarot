@@ -105,7 +105,7 @@ const connectWallet = async () => {
 {loggedin && wallet ?(
   <div>
         <div 
-            data-tooltip-target="tooltip-bottom" data-tooltip-placement="bottom" type="button" className="lg:block hidden text-white rounded-lg text-lg font-bold text-center">
+            data-tooltip-target="tooltip-bottom" data-tooltip-placement="bottom" type="button" className="lg:block hidden text-black rounded-lg text-lg font-bold text-center">
           {wallet.slice(0, 4)}...{wallet.slice(-4)}
         </div>
         <button onClick={handleDeleteCookie} style={logout} className="mx-auto hover:text-red-400 text-black" onMouseEnter={() => setHovered(true)}

@@ -67,105 +67,78 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center justify-between p-24"
+    style={{
+      backgroundImage: 'url(/tarot.avif)', // Path to your background image
+      backgroundSize: 'cover', // Adjust as needed
+      backgroundPosition: 'center', // Adjust as needed
+      // Add more background properties as needed
+      // width: '100vw', // Example width
+      // height: '100vh', // Example height
+    }}>
       <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="text-xl fixed left-0 top-0 flex w-full justify-center pb-6 backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:p-4">
+        <p className="bg-white text-xl fixed left-0 top-0 flex w-full justify-center pb-6 backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:p-4">
          Tarot Reading
         </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
+        <div className="bg-white rounded-lg p-2 fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
             <Navbar/>
         </div>
       </div>
 
-      <button className="text-2xl" onClick={handledrawCard}>        
-        Draw Cards
-      </button>
+      {/* <button className="text-xl bg-black text-white py-2 px-8 rounded-lg" onClick={handledrawCard}>        
+        Draw Card
+      </button> */}
 
-      {drawnCard && (
-        <div>
-          <h2>Drawn Card: {drawnCard}</h2>
-        </div>
-      )}
-
-<button onClick={()=>{setques(true)}}>Ask question</button>
+      <div className="flex gap-10">
+<div>
+   
+   { !ques && (<button onClick={()=>{setques(true)}} className="bg-black rounded-lg py-2 px-8 text-white mt-40">Ask question</button>)}
+   
     {ques && (
-      <div>
-        <input 
+      <div className="px-10 py-10 bgcolor rounded-2xl mt-10 max-w-xl" 
+        style={{
+        border: "1px solid #0162FF",
+        boxShadow: 'inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)',
+      }}>
+       {!lyrics && ( <>
+       <input 
         type="text" 
         placeholder="Write your question here"
         value={description} 
         onChange={(e) => setDescription(e.target.value)} 
+        className="p-2 rounded-lg w-full focus:outline-none"
       />
-    <button onClick={fetchRapLyrics}>Get my reading</button>
+    <button onClick={fetchRapLyrics} className="mt-20 bg-black rounded-lg py-2 px-8 text-white">Get my reading</button>
+    </>
+    )}
       <div>
         {lyrics && (
           <div>
-            <h2>Tarot Reading:</h2>
+            <h2 className="font-bold mb-2">Your Tarot Reading:</h2>
             <p>{lyrics}</p>
           </div>
         )}
       </div>
       </div>
       )}
+      </div>
 
+{drawnCard ? (
+        <div>
+          <h2>Drawn Card: {drawnCard}</h2>
+        </div>
+      ):(
+        <div className="rounded-lg mt-10">
+<Image src="/tarot_card.jpg" width="200" height="200"/>
+</div>
+      )}
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+</div>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+      {/* <div className="mb-32 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left flex justify-center">
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
+        <div
+          className="group rounded-lg border border-transparent bg-white px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
         >
           <h2 className={`mb-3 text-2xl font-semibold`}>
             Deploy{" "}
@@ -176,8 +149,8 @@ export default function Home() {
           <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
             Instantly deploy your Next.js site to a shareable URL with Vercel.
           </p>
-        </a>
-      </div>
+        </div>
+      </div> */}
     </main>
   );
 }

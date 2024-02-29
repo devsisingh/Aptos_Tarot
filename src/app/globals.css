@@ -31,3 +31,7 @@ body {
     text-wrap: balance;
   }
 }
+
+.bgcolor {
+  background: linear-gradient(0.25turn, #0162FF85, #0162FF0D);
+}
