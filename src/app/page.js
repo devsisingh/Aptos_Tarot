@@ -111,10 +111,16 @@ export default function Home() {
       backgroundPosition: 'center', // Adjust as needed
     }}>
       <div className="z-10 max-w-6xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="bg-white text-xl fixed left-0 top-0 flex w-full justify-center pb-6 backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:p-4">
+        <p className="text-white text-xl fixed left-0 top-0 flex w-full justify-center pb-6 backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:p-4" 
+        style={{backgroundColor:'#1F2544',
+        boxShadow: 'inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)',}}
+        >
          Tarot Reading
         </p>
-        <div className="bg-white rounded-lg p-2 fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
+        <div className="rounded-lg px-6 py-2 fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none"
+        style={{backgroundColor:'#F1FFAB',
+        boxShadow: 'inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)',}}
+        >
             <Navbar/>
         </div>
       </div>
@@ -122,7 +128,7 @@ export default function Home() {
       <div className="flex gap-10">
 <div>
    
-   { !ques && (<button onClick={()=>{setques(true)}} className="bg-black rounded-lg py-2 px-8 text-white mt-40">Ask question</button>)}
+   { !ques && (<button onClick={()=>{setques(true)}} className="bg-white rounded-lg py-2 px-8 text-black mt-40">Ask question</button>)}
    
     {ques && (
       <div className="px-10 py-10 bgcolor rounded-2xl mt-10 max-w-xl" 
@@ -155,7 +161,7 @@ export default function Home() {
 
 {drawnCard && lyrics ? (
         <div>
-          <h2 className="mt-10">Drawn Card: {drawnCard}</h2>
+          <h2 className="mt-10 text-white">{drawnCard}</h2>
           <img src={`${
                         'https://nftstorage.link/ipfs'
                       }/${cardimage.split('ipfs://')[1]}`} width="200" height="200"/>

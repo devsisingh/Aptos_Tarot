@@ -15,7 +15,7 @@ export default async function handler(req, res) {
       messages: [
         {
           role: "user",
-          content: `You are a Major Arcana Tarot reader. Client asks this question “${inputFromClient}” and draws the “${outputCard}th” card in “${outputPosition}” position. Interpret to the client in no more than 150 words.`,
+          content: `You are a Major Arcana Tarot reader. Client asks this question “${inputFromClient}” and draws the “${outputCard}” card in “${outputPosition}” position. Interpret to the client in no more than 150 words.`,
         },
       ],
       maxTokens: 64,
