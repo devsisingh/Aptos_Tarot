@@ -106,11 +106,11 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24"
     style={{
-      backgroundImage: 'url(/tarot.avif)', // Path to your background image
+      backgroundImage: 'url(/tarot_design_dark.png)', // Path to your background image
       backgroundSize: 'cover', // Adjust as needed
       backgroundPosition: 'center', // Adjust as needed
     }}>
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
+      <div className="z-10 max-w-6xl w-full items-center justify-between font-mono text-sm lg:flex">
         <p className="bg-white text-xl fixed left-0 top-0 flex w-full justify-center pb-6 backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:p-4">
          Tarot Reading
         </p>
@@ -144,8 +144,8 @@ export default function Home() {
       <div>
         {lyrics && (
           <div>
-            <h2 className="font-bold mb-2">Your Tarot Reading:</h2>
-            <p>{lyrics}</p>
+            <h2 className="font-bold mb-2 text-white">Your Tarot Reading:</h2>
+            <p className="text-white">{lyrics}</p>
           </div>
         )}
       </div>
@@ -160,7 +160,7 @@ export default function Home() {
                         'https://nftstorage.link/ipfs'
                       }/${cardimage.split('ipfs://')[1]}`} width="200" height="200"/>
 
-<button onClick={mintreading} className="mt-6 bg-black rounded-lg py-2 px-8 text-white">Mint reading</button>
+<button onClick={mintreading} className="mt-6 bg-white rounded-lg py-2 px-8 text-black">Mint reading</button>
         </div>
       ):(
         <div className="rounded-lg mt-10">
