@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useState } from 'react';
 import Navbar from '../../components/Navbar';
+import Cookies from 'js-cookie';
 
 export default function Home() {
 
@@ -10,14 +11,19 @@ export default function Home() {
   const [ques, setques] = useState(false);
   const [description, setDescription] = useState("");
   const [lyrics, setLyrics] = useState("");
+  const [cardimage, setcardimage] = useState("");
+  const [position, setposition] = useState("");
 
   const handleDrawCardAndFetchreading = async () => {
+
+    const wallet = Cookies.get("tarot_wallet");
+
     setLoading(true);
   
     const drawTransaction = {
       arguments: [],
       function:
-        '0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::draws_card_v2',
+        '0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::draws_card_v4',
       type: 'entry_function_payload',
       type_arguments: [],
     };
@@ -28,6 +34,10 @@ export default function Home() {
   
       const card = drawResponse.events[0].data.card;
       const position = drawResponse.events[0].data.position;
+
+      setcardimage(drawResponse.events[0].data.card_uri);
+      setDrawnCard(drawResponse.events[0].data.card);
+      setposition(drawResponse.events[0].data.position);
   
       const requestBody = {
         inputFromClient: description,
@@ -52,12 +62,35 @@ export default function Home() {
   
       console.log('Data to send in mint:', card, position);
   
+      // const mintTransaction = {
+      //   arguments: [wallet, description, readingData.lyrics, card, position],
+      //   function:
+      //     '0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::mint_card_v4',
+      //   type: 'entry_function_payload',
+      //   type_arguments: [],
+      // };
+  
+      // const mintResponse = await window.aptos.signAndSubmitTransaction(mintTransaction);
+      // console.log('Mint Card Transaction:', mintResponse);
+    } catch (error) {
+      console.error('Error handling draw card and fetching rap lyrics:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const mintreading = async () => {
+    const wallet = Cookies.get("tarot_wallet");
+    setLoading(true);
+  
+    try {
+  
       const mintTransaction = {
-        arguments: [description, readingData.lyrics, card, position],
+        arguments: [description, lyrics, drawnCard, position],
         function:
-          '0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::mint_card',
+          '0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::mint_card_v4',
         type: 'entry_function_payload',
-        type_arguments: ['string', 'string', 'string', 'string'],
+        type_arguments: [],
       };
   
       const mintResponse = await window.aptos.signAndSubmitTransaction(mintTransaction);
@@ -120,9 +153,14 @@ export default function Home() {
       )}
       </div>
 
-{drawnCard ? (
+{drawnCard && lyrics ? (
         <div>
-          <h2>Drawn Card: {drawnCard}</h2>
+          <h2 className="mt-10">Drawn Card: {drawnCard}</h2>
+          <img src={`${
+                        'https://nftstorage.link/ipfs'
+                      }/${cardimage.split('ipfs://')[1]}`} width="200" height="200"/>
+
+<button onClick={mintreading} className="mt-6 bg-black rounded-lg py-2 px-8 text-white">Mint reading</button>
         </div>
       ):(
         <div className="rounded-lg mt-10">
