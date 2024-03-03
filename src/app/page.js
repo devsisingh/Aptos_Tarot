@@ -1,8 +1,9 @@
 "use client"
 import Image from "next/image";
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 import Navbar from '../../components/Navbar';
 import Cookies from 'js-cookie';
+import axios from 'axios';
 
 export default function Home() {
 
@@ -13,6 +14,7 @@ export default function Home() {
   const [lyrics, setLyrics] = useState("");
   const [cardimage, setcardimage] = useState("");
   const [position, setposition] = useState("");
+  const [mintdone, setmintdone] = useState(false);
 
   const handleDrawCardAndFetchreading = async () => {
 
@@ -95,13 +97,14 @@ export default function Home() {
   
       const mintResponse = await window.aptos.signAndSubmitTransaction(mintTransaction);
       console.log('Mint Card Transaction:', mintResponse);
+      setmintdone(true);
     } catch (error) {
       console.error('Error handling draw card and fetching rap lyrics:', error);
     } finally {
       setLoading(false);
     }
   };
-  
+
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24"
@@ -192,6 +195,69 @@ export default function Home() {
           </p>
         </div>
       </div> */}
+
+
+
+{
+                mintdone && (
+<div style={{backgroundColor:"#222944E5"}} className="flex overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full max-h-full" id="popupmodal">
+    <div className="relative p-4 lg:w-1/3 w-full max-w-2xl max-h-full">
+        <div className="relative rounded-lg shadow bg-black text-white">
+            <div className="flex items-center justify-end p-4 md:p-5 rounded-t dark:border-gray-600">
+            <button 
+                    onClick={() => setmintdone(false)}
+                    type="button" 
+                    className="text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                    <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span className="sr-only">Close modal</span>
+                </button>
+            </div>
+
+            {/* <Image src={emoji} alt="info" className="mx-auto"/> */}
+
+            <div className="p-4 space-y-4">
+            <p className="text-3xl text-center font-bold text-green-500">
+            Successfully Minted!!
+                </p>
+                <p className="text-sm text-center pt-4">
+                Go to your profile to view your minted NFTs
+                </p>
+            </div>
+            <div className="flex items-center p-4 rounded-b pb-20">
+                <button 
+                // style={backgroundbutton}
+                // onClick={gotoprojects}
+                type="button" className="w-1/2 mx-auto text-black bg-white font-bold focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-md px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">My Profile</button>
+              </div>
+        </div>          
+    </div>
+</div>
+)
+}
+
+
+
+
+{
+                loading && (
+<div style={{backgroundColor:"#222944E5"}} className="flex overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full max-h-full" id="popupmodal">
+    <div className="relative p-4 lg:w-1/5 w-full max-w-2xl max-h-full">
+        <div className="relative rounded-lg shadow">
+        <div className="flex justify-center gap-4">
+        <img className="w-50 h-40" src="/loader.gif" alt="Loading icon"/>
+
+    {/* <span className="text-white mt-2">Loading...</span> */}
+</div>
+        </div>          
+    </div>
+</div>
+)
+}
+
+
     </main>
   );
 }
