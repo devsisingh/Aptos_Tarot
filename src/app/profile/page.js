@@ -1,0 +1,224 @@
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import Navbar from "../../../components/Navbar";
+import NftdataContainer from "../../../components/NftDataContainer";
+import Cookies from "js-cookie";
+import axios from "axios";
+const envcollectionid = "";
+const graphqlaptos = "https://indexer.mainnet.aptoslabs.com/v1/graphql";
+
+export default function Profile() {
+
+  const [loading, setLoading] = useState(false);
+  const [nftdata, setnftdata] = useState(null);
+
+  const wallet = Cookies.get("tarot_wallet");
+
+  useEffect(() => {
+
+    const vpnnft = async () => {
+        setLoading(true);
+        try {
+            const wallet = Cookies.get("tarot_wallet");
+  
+          const graphqlbody = {
+            query: `
+              query getAccountCurrentTokens($address: String!, $where: [current_token_ownerships_v2_bool_exp!]!, $offset: Int, $limit: Int) {
+                current_token_ownerships_v2(
+                  where: { owner_address: { _eq: $address }, amount: { _gt: 0 }, _or: [{ table_type_v1: { _eq: "0x3::token::TokenStore" } }, { table_type_v1: { _is_null: true } }], _and: $where }
+                  order_by: [{ last_transaction_version: desc }, { token_data_id: desc }]
+                  offset: $offset
+                  limit: $limit
+                ) {
+                  amount
+                  current_token_data {
+                    ...TokenDataFields
+                  }
+                  last_transaction_version
+                  property_version_v1
+                  token_properties_mutated_v1
+                  is_soulbound_v2
+                  is_fungible_v2
+                }
+                current_token_ownerships_v2_aggregate(where: { owner_address: { _eq: $address }, amount: { _gt: 0 } }) {
+                  aggregate {
+                    count
+                  }
+                }
+              }
+          
+              fragment TokenDataFields on current_token_datas_v2 {
+                description
+                token_uri
+                token_name
+                token_data_id
+                current_collection {
+                  ...CollectionDataFields
+                }
+                token_properties
+                token_standard
+                cdn_asset_uris {
+                  cdn_image_uri
+                }
+              }
+          
+              fragment CollectionDataFields on current_collections_v2 {
+                uri
+                max_supply
+                description
+                collection_name
+                collection_id
+                creator_address
+                cdn_asset_uris {
+                  cdn_image_uri
+                }
+              }
+            `,
+            variables: {
+              address: `${wallet}`,
+              limit: 12,
+              offset: 0,
+              where: [
+                // {
+                //   current_token_data: {
+                //     current_collection: {
+                //       collection_id: {
+                //         _eq: `${envcollectionid}`,
+                //       },
+                //     },
+                //   },
+                // },
+              ],
+            },
+            operationName: "getAccountCurrentTokens",
+          };
+  
+          const response = await axios.post(`${graphqlaptos}`, graphqlbody, {
+            headers: {
+              Accept: "application/json, text/plain, */*",
+              "Content-Type": "application/json",
+            },
+          });
+  
+          console.log("vpn nft", response.data.data.current_token_ownerships_v2);
+          setnftdata(response.data.data.current_token_ownerships_v2);
+        } catch (error) {
+          console.error("Error fetching nft data:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      vpnnft();
+}, []);
+
+  return (
+    <main
+      className="flex min-h-screen flex-col items-center justify-between p-24"
+      style={{
+        backgroundImage: "url(/tarot_design_dark.png)", // Path to your background image
+        backgroundSize: "cover", // Adjust as needed
+        backgroundPosition: "center", // Adjust as needed
+      }}
+    >
+      <div className="z-10 max-w-6xl w-full items-center justify-between font-mono text-sm lg:flex">
+        <Link href="/"
+          className="text-white text-xl fixed left-0 top-0 flex w-full justify-center pb-6 backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:p-4"
+          style={{
+            backgroundColor: "#1F2544",
+            boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
+          }}
+        >
+          Tarot Reading
+        </Link>
+        <div
+          className="rounded-lg px-2 py-2 fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none"
+          style={{
+            backgroundColor: "#F1FFAB",
+            boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
+          }}
+        >
+          <Navbar />
+        </div>
+      </div>
+
+      <NftdataContainer
+                  metaDataArray={nftdata}
+                  MyReviews={false}
+                />
+
+      {!wallet && (
+        <div
+          style={{ backgroundColor: "#222944E5" }}
+          className="flex overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full max-h-full"
+          id="popupmodal"
+        >
+          <div className="relative p-4 lg:w-1/3 w-full max-w-2xl max-h-full">
+            <div className="relative rounded-lg shadow bg-black text-white">
+              <div className="flex items-center justify-end p-4 md:p-5 rounded-t dark:border-gray-600">
+                {/* <button
+                  onClick={() => setques(false)}
+                  type="button"
+                  className="text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  <svg
+                    className="w-3 h-3"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 14 14"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                    />
+                  </svg>
+                  <span className="sr-only">Close modal</span>
+                </button> */}
+              </div>
+
+              <div className="p-4 space-y-4">
+                <p className="text-2xl text-center font-bold text-red-500">
+                  Please connect your wallet!!
+                </p>
+              </div>
+              <div className="flex items-center p-4 rounded-b pb-20 pt-10">
+                <button
+                  type="button"
+                  className="w-1/2 mx-auto text-black bg-white font-bold focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-md px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                >
+                  <Navbar />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {loading && (
+        <div
+          style={{ backgroundColor: "#222944E5" }}
+          className="flex overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full max-h-full"
+          id="popupmodal"
+        >
+          <div className="relative p-4 lg:w-1/5 w-full max-w-2xl max-h-full">
+            <div className="relative rounded-lg shadow">
+              <div className="flex justify-center gap-4">
+                <img
+                  className="w-50 h-40"
+                  src="/loader.gif"
+                  alt="Loading icon"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </main>
+  );
+}

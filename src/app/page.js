@@ -128,7 +128,7 @@ export default function Home() {
           Tarot Reading
         </p>
         <div
-          className="rounded-lg px-6 py-2 fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none"
+          className="rounded-lg px-2 py-2 fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none"
           style={{
             backgroundColor: "#F1FFAB",
             boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",

@@ -2,6 +2,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
+import Link from "next/link";
 
 const REACT_APP_GATEWAY_URL = "https://gateway.netsepio.com/";
 
@@ -10,6 +11,7 @@ const Navbar = () => {
   const wallet = Cookies.get("tarot_wallet");
 
   const [hovered, setHovered] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState("");
 
   const logout = {
     color: hovered ? "red" : "black",
@@ -95,10 +97,29 @@ const Navbar = () => {
     window.location.href = "/";
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const getRandomNumber = () => Math.floor(Math.random() * 1000);
+        const apiUrl = `https://api.multiavatar.com/${getRandomNumber()}`;
+
+        const response = await axios.get(apiUrl);
+        const svgDataUri = `data:image/svg+xml,${encodeURIComponent(response.data)}`;
+        setAvatarUrl(svgDataUri);
+      } catch (error) {
+        console.error('Error fetching avatar:', error.message);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div>
       {loggedin && wallet ? (
-        <div>
+          <div className="flex gap-4">
+          <Link href="/profile">{avatarUrl && <img src={avatarUrl} alt="Avatar" style={{width: 45}}/>} </Link>
+          <div>
           <div className="ltext-black rounded-lg text-lg font-bold text-center">
             {wallet.slice(0, 4)}...{wallet.slice(-4)}
           </div>
@@ -111,7 +132,8 @@ const Navbar = () => {
           >
             Logout
           </button>
-        </div>
+          </div>
+          </div>
       ) : (
         <button onClick={connectWallet}>Connect wallet</button>
       )}
