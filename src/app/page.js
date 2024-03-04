@@ -155,6 +155,11 @@ export default function Home() {
       <div>
         {lyrics && (
           <div>
+                      <div className="flex gap-4 pb-8">
+          <button onClick={()=>{setques(true);setDrawnCard(null);setLyrics("");}} className="bg-black rounded-lg py-2 px-8 text-yellow-200">Start Again</button>          
+
+<button onClick={mintreading} className="bg-yellow-100 rounded-lg py-2 px-6 text-black font-semibold">Mint reading</button>
+</div>
             <h2 className="font-bold mb-2 text-white">Your Tarot Reading:</h2>
             <p className="text-white">{lyrics}</p>
           </div>
@@ -167,11 +172,14 @@ export default function Home() {
 {drawnCard && lyrics ? (
         <div>
           <h2 className="mt-10 text-white">{drawnCard}</h2>
-          <img src={`${
+          {position === "upright" ? (<img src={`${
                         'https://nftstorage.link/ipfs'
-                      }/${cardimage.split('ipfs://')[1]}`} width="200" height="200"/>
-
-<button onClick={mintreading} className="mt-6 bg-white rounded-lg py-2 px-8 text-black">Mint reading</button>
+                      }/${cardimage.split('ipfs://')[1]}`} width="200" height="200"/>)
+                    :(
+                      <img src={`${
+                        'https://nftstorage.link/ipfs'
+                      }/${cardimage.split('ipfs://')[1]}`} width="200" height="200" style={{ transform: 'rotate(180deg)' }}/>
+                    )}
         </div>
       ):(
         <div className="rounded-lg mt-10">
