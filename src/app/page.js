@@ -16,6 +16,8 @@ export default function Home() {
   const [position, setposition] = useState("");
   const [mintdone, setmintdone] = useState(false);
 
+  const wallet = Cookies.get("tarot_wallet");
+
   const handleDrawCardAndFetchreading = async () => {
 
     const wallet = Cookies.get("tarot_wallet");
@@ -133,7 +135,7 @@ export default function Home() {
    
    { !ques && (<button onClick={()=>{setques(true)}} className="bg-white rounded-lg py-2 px-8 text-black mt-40">Ask question</button>)}
    
-    {ques && (
+    {ques && wallet && (
       <div className="px-10 py-10 bgcolor rounded-2xl mt-10 max-w-xl" 
         style={{
         border: "1px solid #0162FF",
@@ -178,6 +180,43 @@ export default function Home() {
       )}
 
 </div>
+
+{ques && !wallet && (
+  <div style={{backgroundColor:"#222944E5"}} className="flex overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full max-h-full" id="popupmodal">
+  <div className="relative p-4 lg:w-1/3 w-full max-w-2xl max-h-full">
+      <div className="relative rounded-lg shadow bg-black text-white">
+          <div className="flex items-center justify-end p-4 md:p-5 rounded-t dark:border-gray-600">
+          <button 
+                  onClick={() => setques(false)}
+                  type="button" 
+                  className="text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+              >
+                  <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                  </svg>
+                  <span className="sr-only">Close modal</span>
+              </button>
+          </div>
+
+          {/* <Image src={emoji} alt="info" className="mx-auto"/> */}
+
+          <div className="p-4 space-y-4">
+          <p className="text-2xl text-center font-bold text-red-500">
+          Please connect your wallet!!
+              </p>
+          </div>
+          <div className="flex items-center p-4 rounded-b pb-20 pt-10">
+              <button 
+              type="button" className="w-1/2 mx-auto text-black bg-white font-bold focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-md px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                <Navbar/>
+                </button>
+            </div>
+      </div>          
+  </div>
+</div>
+)}
+
+
 
       {/* <div className="mb-32 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left flex justify-center">
 
