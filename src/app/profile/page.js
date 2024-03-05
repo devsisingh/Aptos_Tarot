@@ -6,113 +6,53 @@ import Navbar from "../../../components/Navbar";
 import NftdataContainer from "../../../components/NftDataContainer";
 import Cookies from "js-cookie";
 import axios from "axios";
-const envcollectionid = "";
-const graphqlaptos = "https://indexer.mainnet.aptoslabs.com/v1/graphql";
+const envcollectionid = "0x8c2c9fb156b311543f6be131e1e9999135445821b8e5190560f2e04fb558271a";
+const graphqlaptos = "https://indexer-randomnet.hasura.app/v1/graphql";
 
 export default function Profile() {
-
   const [loading, setLoading] = useState(false);
   const [nftdata, setnftdata] = useState(null);
 
   const wallet = Cookies.get("tarot_wallet");
 
   useEffect(() => {
-
     const vpnnft = async () => {
-        setLoading(true);
-        try {
-            const wallet = Cookies.get("tarot_wallet");
-  
-          const graphqlbody = {
-            query: `
-              query getAccountCurrentTokens($address: String!, $where: [current_token_ownerships_v2_bool_exp!]!, $offset: Int, $limit: Int) {
-                current_token_ownerships_v2(
-                  where: { owner_address: { _eq: $address }, amount: { _gt: 0 }, _or: [{ table_type_v1: { _eq: "0x3::token::TokenStore" } }, { table_type_v1: { _is_null: true } }], _and: $where }
-                  order_by: [{ last_transaction_version: desc }, { token_data_id: desc }]
-                  offset: $offset
-                  limit: $limit
-                ) {
-                  amount
-                  current_token_data {
-                    ...TokenDataFields
-                  }
-                  last_transaction_version
-                  property_version_v1
-                  token_properties_mutated_v1
-                  is_soulbound_v2
-                  is_fungible_v2
-                }
-                current_token_ownerships_v2_aggregate(where: { owner_address: { _eq: $address }, amount: { _gt: 0 } }) {
-                  aggregate {
-                    count
-                  }
-                }
-              }
-          
-              fragment TokenDataFields on current_token_datas_v2 {
-                description
-                token_uri
-                token_name
-                token_data_id
-                current_collection {
-                  ...CollectionDataFields
-                }
-                token_properties
-                token_standard
-                cdn_asset_uris {
-                  cdn_image_uri
-                }
-              }
-          
-              fragment CollectionDataFields on current_collections_v2 {
-                uri
-                max_supply
-                description
-                collection_name
-                collection_id
-                creator_address
-                cdn_asset_uris {
-                  cdn_image_uri
-                }
-              }
-            `,
-            variables: {
-              address: `${wallet}`,
-              limit: 12,
-              offset: 0,
-              where: [
-                // {
-                //   current_token_data: {
-                //     current_collection: {
-                //       collection_id: {
-                //         _eq: `${envcollectionid}`,
-                //       },
-                //     },
-                //   },
-                // },
-              ],
-            },
-            operationName: "getAccountCurrentTokens",
-          };
-  
-          const response = await axios.post(`${graphqlaptos}`, graphqlbody, {
-            headers: {
-              Accept: "application/json, text/plain, */*",
-              "Content-Type": "application/json",
-            },
-          });
-  
-          console.log("vpn nft", response.data.data.current_token_ownerships_v2);
-          setnftdata(response.data.data.current_token_ownerships_v2);
-        } catch (error) {
-          console.error("Error fetching nft data:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
+      setLoading(true);
+      try {
+        const wallet = Cookies.get("tarot_wallet");
 
-      vpnnft();
-}, []);
+        const graphqlbody = {
+          query: `
+            query MyQuery { current_token_datas_v2(where: 
+              {collection_id: {_eq: \"${envcollectionid}\"}, 
+              current_token_ownership: 
+              {owner_address: {_eq: \"${wallet}\"}}}) 
+              { token_name 
+                token_uri
+                description
+               } }
+            `,
+          operationName: "MyQuery",
+        };
+
+        const response = await axios.post(`${graphqlaptos}`, graphqlbody, {
+          headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+          },
+        });
+
+        console.log("vpn nft", response.data.data.current_token_datas_v2);
+        setnftdata(response.data.data.current_token_datas_v2);
+      } catch (error) {
+        console.error("Error fetching nft data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    vpnnft();
+  }, []);
 
   return (
     <main
@@ -124,7 +64,8 @@ export default function Profile() {
       }}
     >
       <div className="z-10 max-w-6xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <Link href="/"
+        <Link
+          href="/"
           className="text-white text-xl fixed left-0 top-0 flex w-full justify-center pb-6 backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:p-4"
           style={{
             backgroundColor: "#1F2544",
@@ -144,10 +85,7 @@ export default function Profile() {
         </div>
       </div>
 
-      <NftdataContainer
-                  metaDataArray={nftdata}
-                  MyReviews={false}
-                />
+      <NftdataContainer metaDataArray={nftdata} MyReviews={false} />
 
       {!wallet && (
         <div

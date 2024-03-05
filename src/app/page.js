@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import Cookies from "js-cookie";
@@ -352,14 +353,12 @@ export default function Home() {
                 </p>
               </div>
               <div className="flex items-center p-4 rounded-b pb-20">
-                <button
-                  // style={backgroundbutton}
-                  // onClick={gotoprojects}
+                <Link href="/profile"
                   type="button"
                   className="w-1/2 mx-auto text-black bg-white font-bold focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-md px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >
                   My Profile
-                </button>
+                </Link>
               </div>
             </div>
           </div>
