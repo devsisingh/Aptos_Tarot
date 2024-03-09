@@ -275,8 +275,8 @@ export default function Home() {
               {/* <Image src={emoji} alt="info" className="mx-auto"/> */}
 
               <div className="p-4 space-y-4">
-                <p className="text-2xl text-center font-bold text-red-500">
-                  Please connect your wallet!!
+                <p className="text-2xl text-center font-bold" style={{color:'#FFB000'}}>
+                Please connect your Aptos Wallet
                 </p>
               </div>
               <div className="flex items-center p-4 rounded-b pb-20 pt-10">
