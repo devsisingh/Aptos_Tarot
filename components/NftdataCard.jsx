@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
+import Link from "next/link";
 
 const truncateDescription = (
   description,
@@ -42,6 +43,12 @@ const NftdataCard = ({
     <div className="w-full rounded-2xl" style={{ backgroundColor:'#202333', border: '1px solid #0162FF'}}>
       <div className="w-full h-full rounded-lg p-4">
         <div>
+          <div className="flex gap-4 text-white">
+        <Link href={`https://explorer.aptoslabs.com/txn/${metaData.last_transaction_version}/?network=randomnet`} target="_blank">
+              <img src="/reviewicon.png" alt="" className=" p-1 w-2 h-2"/>
+              </Link>
+              <div>View on explorer</div>
+              </div>
           <div className="flex flex-row gap-4">
             <div className="w-1/2">
               <img

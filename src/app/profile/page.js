@@ -30,6 +30,7 @@ export default function Profile() {
               { token_name 
                 token_uri
                 description
+                last_transaction_version
                } }
             `,
           operationName: "MyQuery",
