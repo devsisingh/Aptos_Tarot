@@ -7,7 +7,6 @@ import Link from "next/link";
 const REACT_APP_GATEWAY_URL = "https://gateway.netsepio.com/";
 
 const Navbar = () => {
-  const loggedin = Cookies.get("tarot_token");
   const wallet = Cookies.get("tarot_wallet");
 
   const [hovered, setHovered] = useState(false);
@@ -26,74 +25,34 @@ const Navbar = () => {
   };
 
   const connectWallet = async () => {
-    const wallet = getAptosWallet();
+    const aptosWallet = getAptosWallet();
     try {
-      const response = await wallet.connect();
+      const response = await aptosWallet.connect();
+      console.log(response); // { address: string, publicKey: string }
+      // Check the connected network
+      const network = await aptosWallet.network();
+      if (network === "Randomnet") {
 
-      const account = await wallet.account();
-      console.log("account", account);
-
-      const networkwallet = await window.aptos.network();
-
-      // Check if the connected network is Mainnet
-      if (networkwallet === "Randomnet") {
-        const { data } = await axios.get(
-          `${REACT_APP_GATEWAY_URL}api/v1.0/flowid?walletAddress=${account.address}`
-        );
-        console.log(data);
-
-        const message = data.payload.eula;
-        const nonce = data.payload.flowId;
-        const publicKey = account.publicKey;
-
-        const { signature, fullMessage } = await wallet.signMessage({
-          message,
-          nonce,
-        });
-        console.log("sign", signature, "full message", fullMessage);
-
-        const authenticationData = {
-          flowId: nonce,
-          signature: `0x${signature}`,
-          pubKey: publicKey,
+        // signing message
+        const payload = {
+          message: "Hello from Aptos Tarot",
+          nonce: Math.random().toString(16),
         };
+        const res = await aptosWallet.signMessage(payload);
+        // signing message
 
-        const authenticateApiUrl = `${REACT_APP_GATEWAY_URL}api/v1.0/authenticate`;
-
-        const config = {
-          url: authenticateApiUrl,
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          data: authenticationData,
-        };
-
-        try {
-          const response = await axios(config);
-          console.log("auth data", response.data);
-          const token = await response?.data?.payload?.token;
-          const userId = await response?.data?.payload?.userId;
-          // localStorage.setItem("platform_token", token);
-          Cookies.set("tarot_token", token, { expires: 7 });
-          Cookies.set("tarot_wallet", account.address, { expires: 7 });
-          Cookies.set("tarot_userid", userId, { expires: 7 });
-
-          window.location.reload();
-        } catch (error) {
-          console.error(error);
-        }
+        Cookies.set("tarot_wallet", response.address, { expires: 7 });
+        window.location.reload();
       } else {
-        alert(`Switch to Randomnet in your wallet`);
+        alert(`Switch to Randomnet in your Petra wallet`);
       }
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.error(error); // { code: 4001, message: "User rejected the request."}
     }
   };
 
   const handleDeleteCookie = () => {
     Cookies.remove("tarot_wallet");
-    Cookies.remove("tarot_token");
     window.location.href = "/";
   };
 
@@ -116,7 +75,7 @@ const Navbar = () => {
 
   return (
     <div>
-      {loggedin && wallet ? (
+      {wallet ? (
           <div className="flex gap-4">
           <Link href="/profile">{avatarUrl && <img src={avatarUrl} alt="Avatar" style={{width: 45}}/>} </Link>
           <div>
