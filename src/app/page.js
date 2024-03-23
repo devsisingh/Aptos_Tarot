@@ -146,7 +146,7 @@ export default function Home() {
               onClick={() => {
                 setques(true);
               }}
-              className="bg-white rounded-lg py-2 px-8 text-black mt-40"
+              className="bg-white rounded-lg py-2 px-8 text-black mt-40 font-bold"
             >
               Ask question
             </button>

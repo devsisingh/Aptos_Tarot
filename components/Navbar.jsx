@@ -79,13 +79,13 @@ const Navbar = () => {
           <div className="flex gap-4">
           <Link href="/profile">{avatarUrl && <img src={avatarUrl} alt="Avatar" style={{width: 45}}/>} </Link>
           <div>
-          <div className="ltext-black rounded-lg text-lg font-bold text-center">
+          <div className="ltext-black rounded-lg text-xl font-bold text-center">
             {wallet.slice(0, 4)}...{wallet.slice(-4)}
           </div>
           <button
             onClick={handleDeleteCookie}
             style={logout}
-            className="mx-auto hover:text-red-400 text-black text-lg font-bold"
+            className="mx-auto hover:text-red-400 text-black text-xl font-bold"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
           >
@@ -94,7 +94,7 @@ const Navbar = () => {
           </div>
           </div>
       ) : (
-        <button onClick={connectWallet}>Connect wallet</button>
+        <button onClick={connectWallet} className="py-2 px-5 font-bold text-xl">Connect wallet</button>
       )}
     </div>
   );
