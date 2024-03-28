@@ -55,7 +55,7 @@ export default function Home() {
         ],
       };
       
-      const apikey = "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"
+      const apikey = ""
       const baseURL = "https://api.openai.com/v1/chat/completions";
       const headers = new Headers();
       headers.append("Content-Type", "application/json");
