@@ -229,22 +229,22 @@ export default function Home() {
 
         {drawnCard && lyrics ? (
           <div>
-            <h2 className="mt-10 text-white">{drawnCard}</h2>
+            <h2 className="mt-10 mb-4 ml-20 text-white">{drawnCard}</h2>
             {position === "upright" ? (
               <img
                 src={`${"https://nftstorage.link/ipfs"}/${
-                  cardimage.split("ipfs://")[1]
+                  cardimage.split("ipfs://")[1].replace("jpg", "png")
                 }`}
-                width="200"
-                height="200"
+                width="350"
+                height="350"
               />
             ) : (
               <img
                 src={`${"https://nftstorage.link/ipfs"}/${
-                  cardimage.split("ipfs://")[1]
+                  cardimage.split("ipfs://")[1].replace("jpg", "png")
                 }`}
-                width="200"
-                height="200"
+                width="350"
+                height="350"
                 style={{ transform: "rotate(180deg)" }}
               />
             )}
