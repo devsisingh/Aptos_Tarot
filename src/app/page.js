@@ -44,27 +44,44 @@ export default function Home() {
       setDrawnCard(drawResponse.events[0].data.card);
       setposition(drawResponse.events[0].data.position);
 
-      const requestBody = {
-        inputFromClient: description,
-        outputCard: card,
-        outputPosition: position,
-      };
 
-      const readingResponse = await fetch("/api/openai", {
+      const requestBody = {
+        model: "gpt-4",
+        messages: [
+          {
+            role: "user",
+            content: `You are a Major Arcana Tarot reader. Client asks this question “${description}” and draws the “${card}” card in “${position}” position. Interpret to the client in no more than 150 words.`,
+          },
+        ],
+      };
+      
+      const apikey = "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"
+      const baseURL = "https://api.openai.com/v1/chat/completions";
+      const headers = new Headers();
+      headers.append("Content-Type", "application/json");
+      headers.append("Accept", "application/json");
+      headers.append(
+        "Authorization",
+        `Bearer ${apikey}`
+      );
+      const readingResponse = await fetch(baseURL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: headers,
         body: JSON.stringify(requestBody),
       });
+
+      // let result = await readingResponse.json();
+      // result += result.choices[0]?.delta?.content || "";
+      // res.status(200).json({ lyrics: result });
+  
 
       if (!readingResponse.ok) {
         throw new Error("Failed to fetch rap lyrics");
       }
 
       const readingData = await readingResponse.json();
-      setLyrics(readingData.lyrics);
-
+      setLyrics(readingData.choices[0].message.content);
+      console.log(readingData);
       console.log("Data to send in mint:", card, position);
 
       // const mintTransaction = {
