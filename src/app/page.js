@@ -55,14 +55,14 @@ export default function Home() {
         ],
       };
       
-      const apikey = ""
+      let apiKey = process.env.NEXT_PUBLIC_API_KEY;
       const baseURL = "https://api.openai.com/v1/chat/completions";
       const headers = new Headers();
       headers.append("Content-Type", "application/json");
       headers.append("Accept", "application/json");
       headers.append(
         "Authorization",
-        `Bearer ${apikey}`
+        `Bearer ${apiKey}`
       );
       const readingResponse = await fetch(baseURL, {
         method: "POST",
