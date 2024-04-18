@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import Navbar from "../../components/Navbar";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { Aptos, Network, AptosConfig } from '@aptos-labs/ts-sdk';
+import dynamic from 'next/dynamic';
 
 export default function Home() {
   const [drawnCard, setDrawnCard] = useState(null);
@@ -26,7 +28,7 @@ export default function Home() {
     const drawTransaction = {
       arguments: [],
       function:
-        "0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::draws_card_v4",
+        "0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::draws_card",
       type: "entry_function_payload",
       type_arguments: [],
     };
@@ -37,12 +39,12 @@ export default function Home() {
       );
       console.log("Drawn Card Transaction:", drawResponse);
 
-      const card = drawResponse.events[0].data.card;
-      const position = drawResponse.events[0].data.position;
+      const card = drawResponse.events[2].data.card;
+      const position = drawResponse.events[2].data.position;
 
-      setcardimage(drawResponse.events[0].data.card_uri);
-      setDrawnCard(drawResponse.events[0].data.card);
-      setposition(drawResponse.events[0].data.position);
+      setcardimage(drawResponse.events[2].data.card_uri);
+      setDrawnCard(drawResponse.events[2].data.card);
+      setposition(drawResponse.events[2].data.position);
 
 
       const requestBody = {
@@ -109,7 +111,7 @@ export default function Home() {
       const mintTransaction = {
         arguments: [description, lyrics, drawnCard, position],
         function:
-          "0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::mint_card_v4",
+          "0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::mint_card",
         type: "entry_function_payload",
         type_arguments: [],
       };
@@ -125,6 +127,14 @@ export default function Home() {
       setLoading(false);
     }
   };
+
+  const NoSSRComponent = dynamic(() => import('../../components/Redirect'), {
+    ssr: false
+  });
+
+  const aptosConfig = new AptosConfig({ network: Network.DEVNET });
+  const aptos = new Aptos(aptosConfig);
+
 
   return (
     <main
@@ -153,6 +163,7 @@ export default function Home() {
           }}
         >
           <Navbar />
+<NoSSRComponent />
         </div>
       </div>
 
@@ -403,6 +414,7 @@ export default function Home() {
           </div>
         </div>
       )}
+
     </main>
   );
 }

@@ -6,8 +6,8 @@ import Navbar from "../../../components/Navbar";
 import NftdataContainer from "../../../components/NftDataContainer";
 import Cookies from "js-cookie";
 import axios from "axios";
-const envcollectionid = "0x8c2c9fb156b311543f6be131e1e9999135445821b8e5190560f2e04fb558271a";
-const graphqlaptos = "https://indexer-randomnet.hasura.app/v1/graphql";
+const envcollectionid = "0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b";
+const graphqlaptos = "https://api.devnet.aptoslabs.com/v1/graphql";
 
 export default function Profile() {
   const [loading, setLoading] = useState(false);
