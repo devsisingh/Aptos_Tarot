@@ -6,7 +6,7 @@ import Navbar from "../../../components/Navbar";
 import NftdataContainer from "../../../components/NftDataContainer";
 import Cookies from "js-cookie";
 import axios from "axios";
-const envcollectionid = "0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b";
+const envcollectionid = "0xed5230f1731b1fdf4a98a63e58007e520b5d9f1ee601b8521eaa186ac79ed177";
 const graphqlaptos = "https://api.devnet.aptoslabs.com/v1/graphql";
 
 export default function Profile() {
@@ -25,7 +25,7 @@ export default function Profile() {
           query: `
             query MyQuery { current_token_datas_v2(where: 
               {collection_id: {_eq: \"${envcollectionid}\"}, 
-              current_token_ownership: 
+              current_token_ownerships: 
               {owner_address: {_eq: \"${wallet}\"}}}) 
               { token_name 
                 token_uri

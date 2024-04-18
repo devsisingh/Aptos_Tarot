@@ -44,7 +44,7 @@ const NftdataCard = ({
       <div className="w-full h-full rounded-lg p-4">
         <div>
           <div className="justify-end flex">
-        <Link href={`https://explorer.aptoslabs.com/txn/${metaData.last_transaction_version}/?network=randomnet`} target="_blank">
+        <Link href={`https://explorer.aptoslabs.com/txn/${metaData.last_transaction_version}/?network=devnet`} target="_blank">
         <div className="flex gap-4 text-white">
         <div className="text-sm py-4">View on explorer</div>
               <img src="/reviewicon.gif" alt="" className="" width="80" height="50" />
