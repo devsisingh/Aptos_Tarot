@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useKeylessAccounts } from "../src/app/lib/useKeylessAccounts";
 import { collapseAddress } from "../src/app/lib/utils";
 import useAptos from "./context/useAptos";
-import {Account} from '@aptos-labs/ts-sdk';
+import {Account, SimpleTransaction} from '@aptos-labs/ts-sdk';
 import GoogleLogo from "../components/GoogleLogo";
 
 const REACT_APP_GATEWAY_URL = "https://gateway.netsepio.com/";
@@ -88,36 +88,52 @@ const Navbar = () => {
   const signmessage = async () => {
     try {
 
-    const balance = async (
-      name,
-      accountAddress,
-     ) => {
-      const amount = await aptos.getAccountAPTAmount({
-        accountAddress,
-      });
-      console.log(`${name}'s balance is: ${amount}`);
-      return amount;
-    };
+      // ----------------------------------------------------- for faucet account and transfer transaction ----------------------------------------
 
-      const bob = Account.generate();
+    // const balance = async (
+    //   name,
+    //   accountAddress,
+    //  ) => {
+    //   const amount = await aptos.getAccountAPTAmount({
+    //     accountAddress,
+    //   });
+    //   console.log(`${name}'s balance is: ${amount}`);
+    //   return amount;
+    // };
 
-      await aptos.fundAccount({
-        accountAddress: activeAccount.accountAddress,
-        amount: 100_000_000,
-      });      
+    //   const bob = Account.generate();
 
-      const transaction = await aptos.transferCoinTransaction({
+    //   await aptos.fundAccount({
+    //     accountAddress: activeAccount.accountAddress,
+    //     amount: 100_000_000,
+    //   });      
+
+      // const transaction = await aptos.transferCoinTransaction({
+      //     sender: activeAccount.accountAddress,
+      //     recipient: bob.accountAddress,
+      //     amount: 100_100_100,
+      // });
+
+      
+
+     // ------------------------------------------------------- smart contract fucntion transaction --------------------------------
+
+      const transaction = await aptos.transaction.build.simple(
+        {
           sender: activeAccount.accountAddress,
-          recipient: bob.accountAddress,
-          amount: 100_100_100,
-      });
+          data: {
+            function: `0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::draws_card`,
+            functionArguments: [],
+          },
+        }
+      );
   
-      const committedTxn = await aptos.signAndSubmitTransaction({ signer: activeAccount, transaction });
+      const committedTxn = await aptos.signAndSubmitTransaction({ signer: activeAccount,  transaction: transaction });
   
       const committedTransactionResponse = await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
 
-      const senderBalance = await balance("Alice", activeAccount.accountAddress);
-      const recieverBalance = await balance("Bob", bob.accountAddress);
+      // const senderBalance = await balance("Alice", activeAccount.accountAddress);
+      // const recieverBalance = await balance("Bob", bob.accountAddress);
   
       console.log("Transaction submitted successfully:", committedTransactionResponse);
     } catch (error) {
