@@ -109,7 +109,7 @@ const Navbar = () => {
       const transaction = await aptos.transferCoinTransaction({
           sender: activeAccount.accountAddress,
           recipient: bob.accountAddress,
-          amount: 100,
+          amount: 100_100_100,
       });
   
       const committedTxn = await aptos.signAndSubmitTransaction({ signer: activeAccount, transaction });
