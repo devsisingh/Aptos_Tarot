@@ -6,6 +6,9 @@ import Navbar from "../../../components/Navbar";
 import NftdataContainer from "../../../components/NftDataContainer";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { useKeylessAccounts } from "../lib/useKeylessAccounts";
+import { Aptos, Network, AptosConfig } from '@aptos-labs/ts-sdk';
+import dynamic from 'next/dynamic';
 const envcollectionid = "0xed5230f1731b1fdf4a98a63e58007e520b5d9f1ee601b8521eaa186ac79ed177";
 const graphqlaptos = "https://api.devnet.aptoslabs.com/v1/graphql";
 
@@ -14,6 +17,7 @@ export default function Profile() {
   const [nftdata, setnftdata] = useState(null);
 
   const wallet = Cookies.get("tarot_wallet");
+  const { activeAccount, disconnectKeylessAccount } = useKeylessAccounts();
 
   useEffect(() => {
     const vpnnft = async () => {
@@ -55,6 +59,13 @@ export default function Profile() {
     vpnnft();
   }, []);
 
+  const NoSSRComponent = dynamic(() => import('../../../components/Redirect'), {
+    ssr: false
+  });
+
+  const aptosConfig = new AptosConfig({ network: Network.DEVNET });
+  const aptos = new Aptos(aptosConfig);
+
   return (
     <main
       className="flex min-h-screen flex-col items-center justify-between lg:p-24 p-10"
@@ -84,12 +95,13 @@ export default function Profile() {
           }}
         >
           <Navbar />
+          <NoSSRComponent />
         </div>
       </div>
 
       <NftdataContainer metaDataArray={nftdata} MyReviews={false} />
 
-      {!wallet && (
+      {!wallet && !activeAccount && (
         <div
           style={{ backgroundColor: "#222944E5" }}
           className="flex overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full max-h-full"

@@ -169,11 +169,15 @@ const Navbar = () => {
 
 {activeAccount && !wallet ? (
   <>
-              <div onClick={disconnectKeylessAccount} className="flex justify-center items-center gap-4 rounded-lg px-4 cursor-not-allowed font-semibold">
+  <div className="flex gap-4">
+          <Link href="/profile">{avatarUrl && <img src={avatarUrl} alt="Avatar" style={{width: 45}}/>} </Link>
+          
+              <div onClick={disconnectKeylessAccount} className="flex justify-center items-center gap-4 rounded-lg px-4 cursor-not-allowed font-semibold" style={{marginTop:'5px'}}>
                 <GoogleLogo />
-                {collapseAddress(activeAccount?.accountAddress.toString())}
+                <div style={{marginLeft:'-10px'}}>{collapseAddress(activeAccount?.accountAddress.toString())}</div>
               </div>
-              <button onClick={signmessage}>Sign message</button>
+              {/* <button onClick={signmessage}>Sign message</button> */}
+              </div>
               </>
             ): (<></>)}
 
