@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { Aptos, Network, AptosConfig } from '@aptos-labs/ts-sdk';
 import dynamic from 'next/dynamic';
+import { useKeylessAccounts } from "./lib/useKeylessAccounts";
 
 export default function Home() {
   const [drawnCard, setDrawnCard] = useState(null);
@@ -19,6 +20,7 @@ export default function Home() {
   const [mintdone, setmintdone] = useState(false);
 
   const wallet = Cookies.get("tarot_wallet");
+  const { activeAccount, disconnectKeylessAccount } = useKeylessAccounts();
 
   const handleDrawCardAndFetchreading = async () => {
     const wallet = Cookies.get("tarot_wallet");
@@ -180,7 +182,7 @@ export default function Home() {
             </button>
           )}
 
-          {ques && wallet && (
+          {ques && (wallet || activeAccount) && (
             <div
               className="px-10 py-10 bgcolor rounded-2xl mt-10 max-w-xl"
               style={{
@@ -267,7 +269,7 @@ export default function Home() {
         )}
       </div>
 
-      {ques && !wallet && (
+      {ques && !wallet && !activeAccount && (
         <div
           style={{ backgroundColor: "#222944E5" }}
           className="flex overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full max-h-full"
