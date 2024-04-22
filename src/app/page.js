@@ -130,6 +130,104 @@ export default function Home() {
     }
   };
 
+  // --------------------------------------------------------- transaction using keyless login -------------------------------------------
+
+  const handleDrawCardAndFetchreadingUsingKeyless = async () => {
+
+    setLoading(true);
+
+    const transaction = await aptos.transaction.build.simple(
+      {
+        sender: activeAccount.accountAddress,
+        data: {
+          function: `0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::draws_card`,
+          functionArguments: [],
+        },
+      }
+    );
+
+    try {
+      const committedTxn = await aptos.signAndSubmitTransaction({ signer: activeAccount,  transaction: transaction });
+
+    const drawResponse = await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
+      console.log("Drawn Card Transaction:", drawResponse);
+
+      const card = drawResponse.events[2].data.card;
+      const position = drawResponse.events[2].data.position;
+
+      setcardimage(drawResponse.events[2].data.card_uri);
+      setDrawnCard(drawResponse.events[2].data.card);
+      setposition(drawResponse.events[2].data.position);
+
+
+      const requestBody = {
+        model: "gpt-4",
+        messages: [
+          {
+            role: "user",
+            content: `You are a Major Arcana Tarot reader. Client asks this question “${description}” and draws the “${card}” card in “${position}” position. Interpret to the client in no more than 150 words.`,
+          },
+        ],
+      };
+      
+      let apiKey = process.env.NEXT_PUBLIC_API_KEY;
+      const baseURL = "https://api.openai.com/v1/chat/completions";
+      const headers = new Headers();
+      headers.append("Content-Type", "application/json");
+      headers.append("Accept", "application/json");
+      headers.append(
+        "Authorization",
+        `Bearer ${apiKey}`
+      );
+      const readingResponse = await fetch(baseURL, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!readingResponse.ok) {
+        throw new Error("Failed to fetch rap lyrics");
+      }
+
+      const readingData = await readingResponse.json();
+      setLyrics(readingData.choices[0].message.content);
+      console.log(readingData);
+      console.log("Data to send in mint:", card, position);
+    } catch (error) {
+      console.error("Error handling draw card and fetching rap lyrics:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const mintreadingUsingKeyless = async () => {
+    setLoading(true);
+
+    try {
+
+      const transaction = await aptos.transaction.build.simple(
+        {
+          sender: activeAccount.accountAddress,
+          data: {
+            function: `0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::mint_card`,
+            functionArguments: [description, lyrics, drawnCard, position],
+          },
+        }
+      );
+
+      const committedTxn = await aptos.signAndSubmitTransaction({ signer: activeAccount,  transaction: transaction });
+      const mintResponse = await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
+
+      console.log("Mint Card Transaction:", mintResponse);
+      setmintdone(true);
+    } catch (error) {
+      console.error("Error handling draw card and fetching rap lyrics:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   const NoSSRComponent = dynamic(() => import('../../components/Redirect'), {
     ssr: false
   });
@@ -199,12 +297,19 @@ export default function Home() {
                     onChange={(e) => setDescription(e.target.value)}
                     className="p-2 rounded-lg w-full focus:outline-none"
                   />
-                  <button
+                  { wallet && (<button
                     onClick={handleDrawCardAndFetchreading}
                     className="mt-20 bg-black rounded-lg py-2 px-8 text-white"
                   >
                     Get my reading
-                  </button>
+                  </button>)}
+
+                  { activeAccount && (<button
+                    onClick={handleDrawCardAndFetchreadingUsingKeyless}
+                    className="mt-20 bg-black rounded-lg py-2 px-8 text-white"
+                  >
+                    Get my reading
+                  </button>)}
                 </>
               )}
               <div>
@@ -222,12 +327,20 @@ export default function Home() {
                         Start Again
                       </button>
 
-                      <button
+                      { wallet && (<button
                         onClick={mintreading}
                         className="bg-yellow-100 rounded-lg py-2 px-6 text-black font-semibold"
                       >
                         Mint reading
-                      </button>
+                      </button>)}
+
+                      { activeAccount && (<button
+                        onClick={mintreadingUsingKeyless}
+                        className="bg-yellow-100 rounded-lg py-2 px-6 text-black font-semibold"
+                      >
+                        Mint reading
+                      </button>)}
+
                     </div>
                     <h2 className="font-bold mb-2 text-white">
                       Your Tarot Reading:
