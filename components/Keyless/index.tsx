@@ -7,7 +7,8 @@ const Keyless = () => {
     const redirectUrl = new URL("https://accounts.google.com/o/oauth2/v2/auth");
     const searchParams = new URLSearchParams({
         client_id: GOOGLE_CLIENT_ID,
-        redirect_uri: `http://localhost:3000/`,
+        // redirect_uri: `http://localhost:3000/`,
+        redirect_uri: `https://aptos-tarot.vercel.app/`,
         response_type: "id_token",
         scope: "openid email profile",
         nonce: ephemeralKeyPair.nonce,
