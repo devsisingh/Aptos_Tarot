@@ -22,6 +22,7 @@ const Navbar = () => {
   const [hovered, setHovered] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [loginbox, setloginbox] = useState(false);
+  const [accountdetails, setaccountdetails] = useState(true);
 
   const logout = {
     color: hovered ? "red" : "black",
@@ -172,12 +173,37 @@ const Navbar = () => {
   <div className="flex gap-4">
           <Link href="/profile">{avatarUrl && <img src={avatarUrl} alt="Avatar" style={{width: 45}}/>} </Link>
           
-              <div onClick={disconnectKeylessAccount} className="flex justify-center items-center gap-4 rounded-lg px-4 cursor-not-allowed font-semibold" style={{marginTop:'5px'}}>
+              <div 
+               onClick={() => {
+                navigator.clipboard.writeText(
+                  activeAccount?.accountAddress.toString()
+                );
+              }}
+              className="flex justify-center items-center gap-4 rounded-lg px-4 font-semibold" style={{marginTop:'5px', cursor: 'pointer' }}>
                 <GoogleLogo />
                 <div style={{marginLeft:'-10px'}}>{collapseAddress(activeAccount?.accountAddress.toString())}</div>
               </div>
-              {/* <button onClick={signmessage}>Sign message</button> */}
+              <button onClick={()=>{setaccountdetails(true)}} className="text-2xl">&#11167;</button>
               </div>
+              {accountdetails && (
+                <div className="font-semibold text-center mb-4 text-lg">
+                  <div className="mt-4">Account balance</div>
+                  <div
+                  className="flex gap-4 justify-center mt-4" style={{color: 'green', cursor: 'pointer' }}
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      activeAccount?.accountAddress.toString()
+                    );
+                  }}
+                >
+                  <p className="text-lg ml-2">
+                  {activeAccount?.accountAddress.toString().slice(0, 6)}...{activeAccount?.accountAddress.toString().slice(-4)}
+                  </p>
+                  <div>Copy</div>
+                </div>
+                  <div className="mt-4" style={{color: 'red', cursor: 'pointer' }} onClick={disconnectKeylessAccount}>Log Out</div>
+                </div>
+              )}
               </>
             ): (<></>)}
 
