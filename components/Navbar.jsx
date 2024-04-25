@@ -23,6 +23,8 @@ const Navbar = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [loginbox, setloginbox] = useState(false);
   const [accountdetails, setaccountdetails] = useState(true);
+  const [balance, setbalance] = useState(null);
+  const [faucetTrigger, setFaucetTrigger] = useState(false);
 
   const logout = {
     color: hovered ? "red" : "black",
@@ -84,6 +86,42 @@ const Navbar = () => {
 
     fetchData();
   }, []);
+
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const getAccountAPTAmount = async (accountAddress) => {
+          const amount = await aptos.getAccountAPTAmount({
+            accountAddress,
+          });
+          return amount;
+        };
+  
+        const senderBalance = await getAccountAPTAmount(activeAccount.accountAddress);
+        console.log('Sender balance:', senderBalance);
+        setbalance(senderBalance);
+        setFaucetTrigger(false);
+      } catch (error) {
+        console.error('Error fetching balance:', error.message);
+      }
+    };
+  
+    fetchBalance();
+  }, [activeAccount, faucetTrigger]);
+
+  const faucetapt = async () => {
+    try {
+      await aptos.fundAccount({
+        accountAddress: activeAccount.accountAddress,
+        amount: 100_000_000,
+      });
+      // After faucet, set the faucetTrigger to true to re-run useEffect
+      setFaucetTrigger(true);
+    } catch (error) {
+      console.error('Error funding account:', error.message);
+    }
+  };
 
 
   const signmessage = async () => {
@@ -187,7 +225,11 @@ const Navbar = () => {
               </div>
               {accountdetails && (
                 <div className="font-semibold text-center mb-4 text-lg">
-                  <div className="mt-4">Account balance</div>
+                  <div className="mt-4">Balance: {balance/100000000} APTs</div>
+                  <div className="mt-4" style={{color: 'blue', cursor: 'pointer' }}
+                  onClick={faucetapt}>
+                    Faucet 1 APT
+                  </div>
                   <div
                   className="flex gap-4 justify-center mt-4" style={{color: 'green', cursor: 'pointer' }}
                   onClick={() => {
