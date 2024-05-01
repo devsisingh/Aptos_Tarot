@@ -18,6 +18,7 @@ export default function Home() {
   const [cardimage, setcardimage] = useState("");
   const [position, setposition] = useState("");
   const [mintdone, setmintdone] = useState(false);
+  const [walletchangepopup, setwalletchangepopup] = useState(false);
 
   const wallet = Cookies.get("tarot_wallet");
   const { activeAccount, disconnectKeylessAccount } = useKeylessAccounts();
@@ -36,9 +37,10 @@ export default function Home() {
       const response = await aptosWallet.connect();
       console.log(response);
       const wallet = Cookies.get("tarot_wallet");
-      if(response.address !== wallet)
+      if(response.address !== wallet && ques && wallet)
       {
         setques(false);
+        setwalletchangepopup(true);
       }
     }
   
@@ -458,23 +460,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* <div className="mb-32 text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left flex justify-center">
-
-        <div
-          className="group rounded-lg border border-transparent bg-white px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </div>
-      </div> */}
-
       {mintdone && (
         <div
           style={{ backgroundColor: "#222944E5" }}
@@ -508,8 +493,6 @@ export default function Home() {
                 </button>
               </div>
 
-              {/* <Image src={emoji} alt="info" className="mx-auto"/> */}
-
               <div className="p-4 space-y-4">
                 <p className="text-3xl text-center font-bold text-green-500">
                   Successfully Minted!!
@@ -531,6 +514,52 @@ export default function Home() {
         </div>
       )}
 
+{walletchangepopup && (
+        <div
+          style={{ backgroundColor: "#222944E5" }}
+          className="flex overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full max-h-full"
+          id="popupmodal"
+        >
+          <div className="relative p-4 lg:w-1/3 w-full max-w-2xl max-h-full">
+            <div className="relative rounded-lg shadow bg-black text-white">
+              <div className="flex items-center justify-end p-4 md:p-5 rounded-t dark:border-gray-600">
+                <button
+                  onClick={() => setwalletchangepopup(false)}
+                  type="button"
+                  className="text-white bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                >
+                  <svg
+                    className="w-3 h-3"
+                    aria-hidden="true"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 14 14"
+                  >
+                    <path
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                    />
+                  </svg>
+                  <span className="sr-only">Close modal</span>
+                </button>
+              </div>
+
+              <div className="p-4 space-y-4 pb-20">
+                <p className="text-3xl text-center font-bold text-red-500">
+                  Incorrect Wallet
+                </p>
+                <p className="text-sm text-center pt-4">
+                Please change to connected wallet address in petra or login with same address.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {loading && (
         <div
           style={{ backgroundColor: "#222944E5" }}
@@ -545,8 +574,6 @@ export default function Home() {
                   src="/loader.gif"
                   alt="Loading icon"
                 />
-
-                {/* <span className="text-white mt-2">Loading...</span> */}
               </div>
             </div>
           </div>
