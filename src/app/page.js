@@ -22,6 +22,29 @@ export default function Home() {
   const wallet = Cookies.get("tarot_wallet");
   const { activeAccount, disconnectKeylessAccount } = useKeylessAccounts();
 
+  const getAptosWallet = () => {
+    if ("aptos" in window) {
+      return window.aptos;
+    } else {
+      window.open("https://petra.app/", "_blank");
+    }
+  };
+
+  useEffect(() => {
+    const fetchwindowwallet = async() =>{
+      const aptosWallet = getAptosWallet();
+      const response = await aptosWallet.connect();
+      console.log(response);
+      const wallet = Cookies.get("tarot_wallet");
+      if(response.address !== wallet)
+      {
+        setques(false);
+      }
+    }
+  
+    fetchwindowwallet();
+  }, [ques])
+
   const handleDrawCardAndFetchreading = async () => {
     const wallet = Cookies.get("tarot_wallet");
 
