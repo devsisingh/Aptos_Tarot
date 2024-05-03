@@ -320,7 +320,7 @@ export default function Home() {
                     placeholder="Write your question here"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="p-2 rounded-lg w-full focus:outline-none"
+                    className="p-2 rounded-lg w-full focus:outline-none text-black"
                   />
                   { wallet && (<button
                     onClick={handleDrawCardAndFetchreading}

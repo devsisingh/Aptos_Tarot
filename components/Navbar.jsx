@@ -183,7 +183,7 @@ const Navbar = () => {
   return (
     <div>
     {!wallet && !activeAccount && (
-<button onClick={()=>{setloginbox(true)}} className="px-10 py-2 text-xl">Login</button>
+<button onClick={()=>{setloginbox(true)}} className="px-10 py-2 text-xl text-black">Login</button>
       )}
 
       {wallet && (
