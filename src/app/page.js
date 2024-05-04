@@ -60,9 +60,14 @@ export default function Home() {
       type_arguments: [],
     };
 
+    const options = {
+      max_gas_amount: 10000
+  }
+
     try {
       const drawResponse = await window.aptos.signAndSubmitTransaction(
-        drawTransaction
+        drawTransaction,
+        options
       );
       console.log("Drawn Card Transaction:", drawResponse);
 
