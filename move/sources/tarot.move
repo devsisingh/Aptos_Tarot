@@ -1,4 +1,4 @@
-module 0x1::tarot {
+module admin::tarot {
 
     //==============================================================================================
     // Dependencies
@@ -48,7 +48,7 @@ module 0x1::tarot {
     const COLLECTION_DESCRIPTION: vector<u8> = b"Aptos Tarot, powered by Aptos Randomnet";
     const COLLECTION_URI: vector<u8> = b"ipfs://bafybeibywuazdl7r6zo7c5qiardnln5xheisiprn3gtcorr4ed4yuenmcm";
 
-    const MAJOR_ARCANA_CARD_URI: vector<u8> = b"ipfs://bafybeie35wootoyyybcwjwapbmxwqrlvs4ybic7ktczlszefvmakuoahyy/";
+    const MAJOR_ARCANA_CARD_URI: vector<u8> = b"ipfs://bafybeifrqo4oorpn2y2l7vy5y4v4tqebvho5q5hg5rfsx2rafzng3u556q/";
 
     const MAJOR_ARCANA_NAME: vector<vector<u8>> = vector[
        (b"0 The Fool"),
@@ -123,6 +123,15 @@ module 0x1::tarot {
         timestamp: u64
     }
 
+    #[event]
+    struct CardDrawnEvent has store, drop {
+        // card
+        card: String,
+        // card image
+        card_uri: String,
+        // upright/reverse
+        position: String
+    }
     //==============================================================================================
     // Functions
     //==============================================================================================
@@ -131,7 +140,7 @@ module 0x1::tarot {
         assert_admin(signer::address_of(admin));
         let (resource_signer, resource_cap) = account::create_resource_account(admin, SEED);
 
-        let royalty = royalty::create(5,100,@master);
+        let royalty = royalty::create(5,100,@treasury);
         // Create an NFT collection with an unlimited supply and the following aspects:
         collection::create_unlimited_collection(
             &resource_signer,
@@ -150,32 +159,44 @@ module 0x1::tarot {
         move_to<State>(admin, state);
     }
 
-    /// draws card, return card name and position.
-    public fun draws_card(): vector<String>{
+    #[randomness]
+    entry fun draws_card(){
         // Pick a random card between 0 to 21
-        let card = string::utf8(*vector::borrow(&MAJOR_ARCANA_NAME, randomness::u64_range(0, 21)));
+        let card_no = randomness::u64_range(0, 22);
+        let card = string::utf8(*vector::borrow(&MAJOR_ARCANA_NAME, card_no));
         // 0 = upright, 1 = reverse
         let position =
-            if(randomness::u8_range(0,1) == 0){
+            if(randomness::u8_range(0,2) == 0){
                 string::utf8(b"upright")
             }else{string::utf8(b"reverse")};
-        vector[card, position]
+        let card_uri = string::utf8(MAJOR_ARCANA_CARD_URI);
+        string::append(&mut card_uri, string_utils::format1(&b"{}.png", card_no));
+        event::emit(CardDrawnEvent {
+            card,
+            card_uri,
+            position
+        });
     }
-
-    public entry fun mint_card(user: &signer, question: String, reading: String, card: String, position: String) acquires State {
+    public entry fun mint_card(
+        user: &signer,
+        question: String,
+        reading: String,
+        card: String,
+        position: String
+    ) acquires State {
         let user_add = signer::address_of(user);
         check_if_user_has_enough_apt(user_add);
         // Payment
-        coin::transfer<AptosCoin>(user, @master, READING_PRICE);
+        coin::transfer<AptosCoin>(user, @treasury, READING_PRICE);
         let state = borrow_global_mut<State>(@admin);
         let res_signer = account::create_signer_with_capability(&state.signer_cap);
         let (_found, card_no) = vector::find(&MAJOR_ARCANA_NAME, |obj|{
             let c: &vector<u8> = obj;
             string::bytes(&card) == c
         });
-        let royalty = royalty::create(5,100,@master);
+        let royalty = royalty::create(5,100,@treasury);
         let token_uri = string::utf8(MAJOR_ARCANA_CARD_URI);
-        string::append(&mut token_uri, string_utils::format1(&b"{}.jpg", card_no));
+        string::append(&mut token_uri, string_utils::format1(&b"{}.png", card_no));
         let token_name = string_utils::format1(&b"Aptos_Tarot #{}", state.minted + 1);
         // Create a new named token:
         let token_const_ref = token::create_named_token(
@@ -258,6 +279,15 @@ module 0x1::tarot {
     // View functions
     //==============================================================================================
 
+    #[view]
+    public fun get_collection_address(): address acquires State {
+        let state = borrow_global_mut<State>(@admin);
+        collection::create_collection_address(
+            &signer::address_of(&account::create_signer_with_capability(&state.signer_cap)),
+            &string::utf8(COLLECTION_NAME)
+        )
+    }
+
     //==============================================================================================
     // Validation functions
     //==============================================================================================
@@ -321,30 +351,30 @@ module 0x1::tarot {
         assert!(state.reading_minted_events == 0, 2);
     }
 
-    #[test(admin = @admin, user = @0xA, master = @master)]
+    #[test(admin = @admin, user = @0xA, treasury = @treasury)]
     fun test_mint_success(
         admin: &signer,
         user: &signer,
-        master: &signer
+        treasury: &signer
     ) acquires State {
         let admin_address = signer::address_of(admin);
         let user_address = signer::address_of(user);
-        let master_address = signer::address_of(master);
+        let treasury_address = signer::address_of(treasury);
         account::create_account_for_test(admin_address);
         account::create_account_for_test(user_address);
-        account::create_account_for_test(master_address);
+        account::create_account_for_test(treasury_address);
 
         let aptos_framework = account::create_account_for_test(@aptos_framework);
         timestamp::set_time_has_started_for_testing(&aptos_framework);
         let (burn_cap, mint_cap) =
             aptos_coin::initialize_for_test(&aptos_framework);
             coin::register<AptosCoin>(user);
-            coin::register<AptosCoin>(master);
+            coin::register<AptosCoin>(treasury);
             init_module(admin);
             aptos_coin::mint(&aptos_framework, user_address, READING_PRICE);
 
         let expected_image_uri = string::utf8(MAJOR_ARCANA_CARD_URI);
-        string::append(&mut expected_image_uri, string_utils::format1(&b"{}.jpg",0));
+        string::append(&mut expected_image_uri, string_utils::format1(&b"{}.png",0));
 
         let resource_account_address = account::create_resource_address(&@admin, SEED);
 
@@ -359,7 +389,7 @@ module 0x1::tarot {
         let expected_nft_token_address = token::create_token_address(
             &resource_account_address,
             &string::utf8(COLLECTION_NAME),
-            &string_utils::format1(&b"Aptos_Tarot #{}", state.minted)
+            &string_utils::format1(&b"Aptos_Tarot #{}", 1)
         );
         let nft_token_object = object::address_to_object<token::Token>(expected_nft_token_address);
         assert!(

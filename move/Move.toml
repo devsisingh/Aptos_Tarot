@@ -4,8 +4,8 @@ version = "1.0.0"
 upgrade_policy = "compatible"
 
 [addresses]
-admin = "0xdd8525a7312ca2f4885712d3bc4cd6e7df21c8d74308a9bf6d5c86bc3abcc196"
-master = "0xdd8525a7312ca2f4885712d3bc4cd6e7df21c8d74308a9bf6d5c86bc3abcc196"
+admin = "0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b"
+treasury = "0x602e8e01113fee17faa8915d3486116065e2140e31ab1f91bf62baaaaf685019"
 
 [dependencies]
 AptosFramework = { local = "../../aptos-core/aptos-move/framework/aptos-framework" }
