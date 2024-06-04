@@ -12,9 +12,9 @@ const NftdataContainer = ({
   };
 
   const renderNoReviewsFound = () => (
-    <div className="w-full text-center py-20">
-      <h2 className="text-4xl font-bold text-white">No Readings Minted</h2>
-      <div className="bg-blue-500 text-white font-bold py-4 px-6 rounded-lg w-1/5 mx-auto my-20">
+    <div className="w-full text-center mt-40">
+      <h2 className="font-bold text-white" style={{fontSize:30}}>No Readings Minted</h2>
+      <div className="text-black font-bold rounded-full mx-auto mt-4" style={{backgroundColor:'#E8C6AA', paddingTop:10, paddingBottom:10}}>
         <Link href="/">Mint Now</Link>
       </div>
     </div>
