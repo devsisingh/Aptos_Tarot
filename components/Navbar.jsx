@@ -183,20 +183,20 @@ const Navbar = () => {
   return (
     <div>
     {!wallet && !activeAccount && (
-<button onClick={()=>{setloginbox(true)}} className="px-10 py-2 text-xl text-black">Login</button>
+<button onClick={()=>{setloginbox(true)}} className="px-10 py-2 text-xl text-black font-bold">Login</button>
       )}
 
       {wallet && (
           <div className="flex gap-4">
           <Link href="/profile">{avatarUrl && <img src={avatarUrl} alt="Avatar" style={{width: 45}}/>} </Link>
           <div>
-          <div className="text-black rounded-lg text-xl font-bold text-center">
+          <div className="text-black rounded-lg text-lg font-bold text-center">
             {wallet.slice(0, 4)}...{wallet.slice(-4)}
           </div>
           <button
             onClick={handleDeleteCookie}
             style={logout}
-            className="mx-auto hover:text-red-400 text-black text-xl font-bold"
+            className="mx-auto hover:text-red-400 text-black text-lg font-bold"
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
           >
@@ -257,7 +257,7 @@ const Navbar = () => {
           id="popupmodal"
         >
           <div className="relative p-4 lg:w-1/3 w-full max-w-2xl max-h-full">
-            <div className="relative rounded-lg shadow bg-black text-white">
+            <div className="relative rounded-3xl shadow bg-black text-white">
               <div className="flex items-center justify-end p-4 md:p-5 rounded-t dark:border-gray-600">
                 <button
                   onClick={() => setloginbox(false)}
@@ -286,7 +286,7 @@ const Navbar = () => {
               {/* <Image src={emoji} alt="info" className="mx-auto"/> */}
 
               <div className="p-4 space-y-4">
-                <p className="text-3xl text-center font-bold text-green-500">
+                <p className="text-3xl text-center font-bold" style={{color:'#E8C6AA'}}>
                 Login Options
                 </p>
               </div>

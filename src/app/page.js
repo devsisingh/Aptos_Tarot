@@ -274,27 +274,25 @@ export default function Home() {
     ? "url(/profilebg.png)"
     : (wallet || activeAccount)
     ? "url(/afterlogin.png)"
-    : "url(/beforelogin.png)",
+    : "url(/afterlogin.png)",
         backgroundSize: "cover", // Adjust as needed
         backgroundPosition: "center", // Adjust as needed
+        // position: "relative",
       }}
     >
-      <div className="z-10 lg:max-w-7xl w-full justify-between font-mono text-sm lg:flex md:flex">
+      <div
+    className="z-10 lg:max-w-7xl w-full justify-between font-mono text-sm lg:flex md:flex"
+    style={{
+      position: "absolute", // Makes the div overlay the background
+      top: 30, // Adjust as needed
+    }}
+  >
         <div></div>
-        {/* <p
-          className="text-white text-xl pb-6 backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit rounded-xl p-4"
-          style={{
-            backgroundColor: "#1F2544",
-            boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
-          }}
-        >
-          Tarot Reading
-        </p> */}
         <div
-          className="rounded-lg px-2 py-2 lg:mt-0 md:mt-0 mt-4"
+          className="rounded-full px-4 py-1 lg:mt-0 md:mt-0 mt-4"
           style={{
-            backgroundColor: "#F1FFAB",
-            boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
+            backgroundColor: "#E8C6AA",
+            // boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
           }}
         >
           <Navbar />
@@ -304,51 +302,58 @@ export default function Home() {
 
       <div className="lg:flex md:flex gap-10">
         <div>
-          {!ques && (
+
+        {(!wallet && !activeAccount) &&  (
             <button
               onClick={() => {
                 setques(true);
               }}
-              className="bg-white rounded-lg py-2 px-8 text-black mt-40 font-bold"
+              className={`rounded-full py-2 px-14 ml-2 uppercase text-black`} style={{fontFamily: 'fantasy', backgroundColor:'#E8C6AA', marginTop:'420px'}}
             >
-              Ask question
+              Start
             </button>
           )}
 
-          {ques && (wallet || activeAccount) && (
-            <div
-              className="px-10 py-10 bgcolor rounded-2xl mt-10 max-w-xl"
-              style={{
-                border: "1px solid #0162FF",
-                boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
-              }}
-            >
-              {!lyrics && (
-                <>
+          {(wallet || activeAccount) && (!lyrics) && (
+
+                  <div className="mt-60 flex flex-col items-center">
                   <input
                     type="text"
                     placeholder="Write your question here"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="p-2 rounded-lg w-full focus:outline-none text-black"
+                    className="py-3 px-4 rounded-full w-full focus:outline-none text-white mt-48 placeholder-white"
+                    style={{ width: '100%', minWidth: '600px', backgroundColor:'#A6A6A6'}} 
                   />
+                  
                   { wallet && (<button
                     onClick={handleDrawCardAndFetchreading}
-                    className="mt-20 bg-black rounded-lg py-2 px-8 text-white"
+                    className="bg-white rounded-full py-3 px-16 text-black mt-4 uppercase" style={{fontFamily: 'fantasy', backgroundColor:'#E8C6AA'}}
                   >
-                    Get my reading
+                    Ask
                   </button>)}
 
-                  { activeAccount && (<button
+                  { activeAccount && (
+                    <button
                     onClick={handleDrawCardAndFetchreadingUsingKeyless}
-                    className="mt-20 bg-black rounded-lg py-2 px-8 text-white"
+                    className="bg-white rounded-full py-3 px-16 text-black mt-4 uppercase" style={{fontFamily: 'fantasy', backgroundColor:'#E8C6AA'}}
                   >
-                    Get my reading
+                    Ask
                   </button>)}
-                </>
-              )}
+                  </div>
+          )}
+        </div>
+
+        {(wallet || activeAccount) && lyrics && (
+            
+            <div
+              className="px-10 py-10 rounded-2xl max-w-xl"
+              style={{
+                boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
+                backgroundColor: "rgba(255, 255, 255, 0.7)"
+              }}
+            >
               <div>
-                {lyrics && (
                   <div>
                     <div className="flex gap-4 pb-8">
                       <button
@@ -357,38 +362,40 @@ export default function Home() {
                           setDrawnCard(null);
                           setLyrics("");
                         }}
-                        className="bg-black rounded-lg py-2 px-8 text-yellow-200"
+                        className="rounded-full py-2 px-8 text-black font-semibold"
+                        style={{backgroundColor: "#E8C6AA"}}
                       >
                         Start Again
                       </button>
 
                       { wallet && (<button
                         onClick={mintreading}
-                        className="bg-yellow-100 rounded-lg py-2 px-6 text-black font-semibold"
+                        className="rounded-full py-2 px-6 text-black font-semibold"
+                        style={{backgroundColor: "#E8C6AA"}}
                       >
                         Mint reading
                       </button>)}
 
                       { activeAccount && (<button
                         onClick={mintreadingUsingKeyless}
-                        className="bg-yellow-100 rounded-lg py-2 px-6 text-black font-semibold"
+                        className="rounded-full py-2 px-6 text-black font-semibold"
+                        style={{backgroundColor: "#E8C6AA"}}
                       >
                         Mint reading
                       </button>)}
 
                     </div>
-                    <h2 className="font-bold mb-2 text-white">
+                    <h2 className="font-bold mb-2 text-black">
                       Your Tarot Reading:
                     </h2>
-                    <p className="text-white">{lyrics}</p>
+                    <p className="text-black">{lyrics}</p>
                   </div>
-                )}
               </div>
             </div>
           )}
         </div>
 
-        {drawnCard && lyrics ? (
+        {drawnCard && lyrics && (
           <div>
             <h2 className="mt-10 mb-4 ml-20 text-white">{drawnCard}</h2>
             {position === "upright" ? (
@@ -410,12 +417,7 @@ export default function Home() {
               />
             )}
           </div>
-        ) : (
-          <div className="rounded-lg mt-10">
-            <img src="/tarot_card.jpg" className="w-full"/>
-          </div>
         )}
-      </div>
 
       {ques && !wallet && !activeAccount && (
         <div
@@ -424,7 +426,7 @@ export default function Home() {
           id="popupmodal"
         >
           <div className="relative p-4 lg:w-1/3 w-full max-w-2xl max-h-full">
-            <div className="relative rounded-lg shadow bg-black text-white">
+            <div className="relative rounded-3xl shadow bg-black text-white">
               <div className="flex items-center justify-end p-4 md:p-5 rounded-t dark:border-gray-600">
                 <button
                   onClick={() => setques(false)}
@@ -453,14 +455,14 @@ export default function Home() {
               {/* <Image src={emoji} alt="info" className="mx-auto"/> */}
 
               <div className="p-4 space-y-4">
-                <p className="text-2xl text-center font-bold" style={{color:'#FFB000'}}>
+                <p className="text-2xl text-center font-bold" style={{color:'#E8C6AA'}}>
                 Please connect your Aptos Wallet
                 </p>
               </div>
               <div className="flex items-center p-4 rounded-b pb-20 pt-10">
                 <button
                   type="button"
-                  className="w-1/2 mx-auto text-black bg-white font-bold focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-md px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  className="w-1/2 mx-auto text-black bg-white font-bold focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full text-md text-center"
                 >
                   <Navbar />
                 </button>

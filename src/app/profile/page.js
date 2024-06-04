@@ -93,10 +93,10 @@ export default function Profile() {
           </Link>
         </p>
         <div
-          className="rounded-lg px-2 py-2 lg:mt-0 md:mt-0 mt-4"
+          className="rounded-full px-4 py-1 lg:mt-0 md:mt-0 mt-4"
           style={{
-            backgroundColor: "#F1FFAB",
-            boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
+            backgroundColor: "#E8C6AA",
+            // boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
           }}
         >
           <Navbar />
@@ -113,19 +113,19 @@ export default function Profile() {
           id="popupmodal"
         >
           <div className="relative p-4 lg:w-1/3 w-full max-w-2xl max-h-full">
-            <div className="relative rounded-lg shadow bg-black text-white">
+            <div className="relative rounded-3xl shadow bg-black text-white">
               <div className="flex items-center justify-end p-4 md:p-5 rounded-t dark:border-gray-600">
               </div>
 
               <div className="p-4 space-y-4">
-                <p className="text-2xl text-center font-bold" style={{color:'#FFB000'}}>
+                <p className="text-2xl text-center font-bold" style={{color:'#E8C6AA'}}>
                 Please connect your Aptos Wallet
                 </p>
               </div>
               <div className="flex items-center p-4 rounded-b pb-20 pt-10">
                 <button
                   type="button"
-                  className="w-1/2 mx-auto text-black bg-white font-bold focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-md px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  className="w-1/2 mx-auto text-black bg-white font-bold focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full text-md text-center"
                 >
                   <Navbar />
                 </button>
