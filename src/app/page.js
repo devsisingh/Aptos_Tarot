@@ -268,15 +268,20 @@ export default function Home() {
 
   return (
     <main
-      className="flex min-h-screen flex-col items-center justify-between lg:p-24 p-10"
+      className="flex h-screen flex-col items-center justify-between p-10"
       style={{
-        backgroundImage: "url(/tarot_design_dark.png)", // Path to your background image
+        backgroundImage: (lyrics && ques) 
+    ? "url(/profilebg.png)"
+    : (wallet || activeAccount)
+    ? "url(/afterlogin.png)"
+    : "url(/beforelogin.png)",
         backgroundSize: "cover", // Adjust as needed
         backgroundPosition: "center", // Adjust as needed
       }}
     >
-      <div className="z-10 lg:max-w-6xl w-full justify-between font-mono text-sm lg:flex md:flex">
-        <p
+      <div className="z-10 lg:max-w-7xl w-full justify-between font-mono text-sm lg:flex md:flex">
+        <div></div>
+        {/* <p
           className="text-white text-xl pb-6 backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit rounded-xl p-4"
           style={{
             backgroundColor: "#1F2544",
@@ -284,7 +289,7 @@ export default function Home() {
           }}
         >
           Tarot Reading
-        </p>
+        </p> */}
         <div
           className="rounded-lg px-2 py-2 lg:mt-0 md:mt-0 mt-4"
           style={{

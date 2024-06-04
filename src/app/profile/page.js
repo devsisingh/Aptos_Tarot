@@ -76,23 +76,20 @@ export default function Profile() {
 
   return (
     <main
-      className="flex min-h-screen flex-col items-center justify-between lg:p-24 p-10"
+      className="flex min-h-screen flex-col items-center justify-between p-10"
       style={{
-        backgroundImage: "url(/tarot_design_dark.png)", // Path to your background image
+        backgroundImage: "url(/profilebg.png)", // Path to your background image
         backgroundSize: "cover", // Adjust as needed
         backgroundPosition: "center", // Adjust as needed
       }}
     >
-      <div className="z-10 lg:max-w-6xl w-full justify-between font-mono text-sm lg:flex md:flex">
-        <p
-          className="text-white text-xl pb-6 backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit rounded-xl p-4"
-          style={{
-            backgroundColor: "#1F2544",
-            boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
-          }}
+      <div className="z-10 lg:max-w-7xl w-full justify-between font-mono text-sm lg:flex md:flex">
+      <p
+          className="text-white text-2xl backdrop-blur-2xl dark:border-neutral-800 dark:from-inherit rounded-xl"
+          style={{fontFamily: 'fantasy'}}
         >
           <Link href="/">
-          Tarot Reading
+          Aptos Tarot
           </Link>
         </p>
         <div
