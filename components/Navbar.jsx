@@ -297,9 +297,9 @@ const Navbar = () => {
               </button>
                     </div>
                     <div className="flex justify-center p-4 pb-20">
-              <div className="text-black px-8 py-2 bg-white" style={{borderRadius:'10px'}}>
+              {/* <div className="text-black px-8 py-2 bg-white" style={{borderRadius:'10px'}}>
                     <Link href={'/login'}>Login with google</Link >
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
