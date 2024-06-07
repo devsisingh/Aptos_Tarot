@@ -45,7 +45,7 @@ const Navbar = () => {
       console.log(response); // { address: string, publicKey: string }
       // Check the connected network
       const network = await aptosWallet.network();
-      if (network === "Devnet") {
+      if (network === "Mainnet") {
 
         // signing message
         const payload = {
@@ -58,7 +58,7 @@ const Navbar = () => {
         Cookies.set("tarot_wallet", response.address, { expires: 7 });
         window.location.reload();
       } else {
-        alert(`Switch to Devnet in your Petra wallet`);
+        alert(`Switch to Mainnet in your Petra wallet`);
       }
     } catch (error) {
       console.error(error); // { code: 4001, message: "User rejected the request."}

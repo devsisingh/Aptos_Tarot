@@ -8,7 +8,7 @@ export const LocalStorageKeys = {
 };
 
 export const devnetClient = new Aptos(
-  new AptosConfig({ network: Network.DEVNET })
+  new AptosConfig({ network: Network.MAINNET })
 );
 
 /// FIXME: Put your client id here

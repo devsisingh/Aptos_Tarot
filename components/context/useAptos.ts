@@ -5,7 +5,7 @@ function useAptos() {
   const moduleAddress = "0xcfcdcdf5798fd485e834f4cdf657685a68746bad02f439880f6707b0ccc57220";
   
   const aptos = useMemo(() => {
-    const aptosConfig = new AptosConfig({ network: Network.DEVNET });
+    const aptosConfig = new AptosConfig({ network: Network.MAINNET });
     return new Aptos(aptosConfig);
   }, []);
 

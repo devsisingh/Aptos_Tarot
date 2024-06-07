@@ -262,7 +262,7 @@ export default function Home() {
     ssr: false
   });
 
-  const aptosConfig = new AptosConfig({ network: Network.DEVNET });
+  const aptosConfig = new AptosConfig({ network: Network.MAINNET });
   const aptos = new Aptos(aptosConfig);
 
 

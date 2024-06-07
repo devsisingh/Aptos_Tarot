@@ -10,7 +10,7 @@ import { useKeylessAccounts } from "../lib/useKeylessAccounts";
 import { Aptos, Network, AptosConfig } from '@aptos-labs/ts-sdk';
 import dynamic from 'next/dynamic';
 const envcollectionid = "0xed5230f1731b1fdf4a98a63e58007e520b5d9f1ee601b8521eaa186ac79ed177";
-const graphqlaptos = "https://api.devnet.aptoslabs.com/v1/graphql";
+const graphqlaptos = "https://api.mainnet.aptoslabs.com/v1/graphql";
 
 export default function Profile() {
   const [loading, setLoading] = useState(false);
@@ -71,7 +71,7 @@ export default function Profile() {
     ssr: false
   });
 
-  const aptosConfig = new AptosConfig({ network: Network.DEVNET });
+  const aptosConfig = new AptosConfig({ network: Network.MAINNET });
   const aptos = new Aptos(aptosConfig);
 
   return (
