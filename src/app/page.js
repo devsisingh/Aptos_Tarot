@@ -55,7 +55,7 @@ export default function Home() {
     const drawTransaction = {
       arguments: [],
       function:
-        "0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::draws_card",
+        "0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarotv2::draws_card",
       type: "entry_function_payload",
       type_arguments: [],
     };
@@ -143,7 +143,7 @@ export default function Home() {
       const mintTransaction = {
         arguments: [description, lyrics, drawnCard, position],
         function:
-          "0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::mint_card",
+          "0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarotv2::mint_card",
         type: "entry_function_payload",
         type_arguments: [],
       };
