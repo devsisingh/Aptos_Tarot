@@ -40,13 +40,16 @@ const NftdataCard = ({
   }
 
   return (
-    <div className="w-full rounded-2xl" style={{ backgroundColor:'#202333', border: '1px solid #0162FF'}}>
+    <div className="w-full rounded-2xl" 
+    style={{ 
+      boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
+      backgroundColor: "rgba(255, 255, 255, 0.7)"}}>
       <div className="w-full h-full rounded-lg p-4">
         <div>
           <div className="justify-end flex">
         <Link href={`https://explorer.aptoslabs.com/txn/${metaData.last_transaction_version}/?network=mainnet`} target="_blank">
-        <div className="flex gap-4 text-white">
-        <div className="text-sm py-4">View on explorer</div>
+        <div className="flex gap-4 text-black">
+        <div className="text-lg mt-4 font-bold">View on explorer</div>
               <img src="/reviewicon.gif" alt="" className="" width="80" height="50" />
               </div>
               </Link>
@@ -62,7 +65,7 @@ const NftdataCard = ({
                     />
             </div>
             <div className="w-full">
-              <h3 className="leading-12 mb-2 text-white">
+              <h3 className="leading-12 mb-2 text-black">
                 <div className="lg:flex md:flex justify-between">
                   <div className="text-xl font-bold mt-6">
                         {metaData.token_name}
@@ -71,7 +74,7 @@ const NftdataCard = ({
               </h3>
 
               <div className="rounded-xl">
-                <div className="text-sm text-white text-start flex mt-2">
+                <div className="text-sm text-black text-start flex mt-2">
                     {metaData.description}
                 </div>
               </div>
