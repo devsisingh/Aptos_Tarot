@@ -65,18 +65,18 @@ export default function Home() {
   }
 
     try {
-      // const drawResponse = await window.aptos.signAndSubmitTransaction(
-      //   drawTransaction,
-      //   options
-      // );
-      // console.log("Drawn Card Transaction:", drawResponse);
+      const drawResponse = await window.aptos.signAndSubmitTransaction(
+        drawTransaction,
+        options
+      );
+      console.log("Drawn Card Transaction:", drawResponse);
 
-      const card = "XIII Death";
-      const position = "upright"
+      const card = drawResponse.events[4].data.card;
+      const position = drawResponse.events[4].data.position;
 
-      setcardimage("ipfs://bafybeieu5d65tannrayr6t2ukedy427mij24vsuhxavsidk2cea2t5hqtm/13.png");
-      setDrawnCard("XIII Death");
-      setposition("upright");
+      setcardimage(drawResponse.events[4].data.card_uri);
+      setDrawnCard(drawResponse.events[4].data.card);
+      setposition(drawResponse.events[4].data.position);
 
 
       const requestBody = {
