@@ -344,6 +344,7 @@ export default function Home() {
           )}
         </div>
 
+        <div className="flex mt-40">
         {(wallet || activeAccount) && lyrics && (
             
             <div
@@ -395,9 +396,15 @@ export default function Home() {
           )}
         </div>
 
-        {drawnCard && lyrics && (
+        {drawnCard && lyrics && cardimage && (
           <div>
-            <h2 className="mt-10 mb-4 ml-20 text-white">{drawnCard}</h2>
+            <h2 className="mt-40 mb-4 ml-20 text-black text-center px-4 py-2 rounded-lg font-bold w-1/2" 
+            style={{
+              boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
+              backgroundColor: "rgba(255, 255, 255, 0.7)"
+            }}>
+              {drawnCard}
+            </h2>
             {position === "upright" ? (
               <img
                 src={`${"https://nftstorage.link/ipfs"}/${
@@ -418,6 +425,8 @@ export default function Home() {
             )}
           </div>
         )}
+
+</div>
 
       {ques && !wallet && !activeAccount && (
         <div
