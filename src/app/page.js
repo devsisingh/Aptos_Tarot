@@ -71,12 +71,12 @@ export default function Home() {
       );
       console.log("Drawn Card Transaction:", drawResponse);
 
-      const card = drawResponse.events[2].data.card;
-      const position = drawResponse.events[2].data.position;
+      const card = drawResponse.events[4].data.card;
+      const position = drawResponse.events[4].data.position;
 
-      setcardimage(drawResponse.events[2].data.card_uri);
-      setDrawnCard(drawResponse.events[2].data.card);
-      setposition(drawResponse.events[2].data.position);
+      setcardimage(drawResponse.events[4].data.card_uri);
+      setDrawnCard(drawResponse.events[4].data.card);
+      setposition(drawResponse.events[4].data.position);
 
 
       const requestBody = {
@@ -182,12 +182,12 @@ export default function Home() {
     const drawResponse = await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
       console.log("Drawn Card Transaction:", drawResponse);
 
-      const card = drawResponse.events[2].data.card;
-      const position = drawResponse.events[2].data.position;
+      const card = drawResponse.events[4].data.card;
+      const position = drawResponse.events[4].data.position;
 
-      setcardimage(drawResponse.events[2].data.card_uri);
-      setDrawnCard(drawResponse.events[2].data.card);
-      setposition(drawResponse.events[2].data.position);
+      setcardimage(drawResponse.events[4].data.card_uri);
+      setDrawnCard(drawResponse.events[4].data.card);
+      setposition(drawResponse.events[4].data.position);
 
 
       const requestBody = {
