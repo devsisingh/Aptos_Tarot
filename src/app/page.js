@@ -330,7 +330,7 @@ export default function Home() {
                     onClick={handleDrawCardAndFetchreading}
                     className="bg-white rounded-full py-3 px-16 text-black mt-4 uppercase" style={{fontFamily: 'fantasy', backgroundColor:'#E8C6AA'}}
                   >
-                    Ask
+                    Ask (0.3 APT)
                   </button>)}
 
                   { activeAccount && (
@@ -338,7 +338,7 @@ export default function Home() {
                     onClick={handleDrawCardAndFetchreadingUsingKeyless}
                     className="bg-white rounded-full py-3 px-16 text-black mt-4 uppercase" style={{fontFamily: 'fantasy', backgroundColor:'#E8C6AA'}}
                   >
-                    Ask
+                    Ask (0.3 APT)
                   </button>)}
                   </div>
           )}
@@ -373,7 +373,7 @@ export default function Home() {
                         className="rounded-full py-2 px-6 text-black font-semibold"
                         style={{backgroundColor: "#E8C6AA"}}
                       >
-                        Mint reading
+                        Mint reading (0.1 APT)
                       </button>)}
 
                       { activeAccount && (<button
@@ -381,7 +381,7 @@ export default function Home() {
                         className="rounded-full py-2 px-6 text-black font-semibold"
                         style={{backgroundColor: "#E8C6AA"}}
                       >
-                        Mint reading
+                        Mint reading (0.1 APT)
                       </button>)}
 
                     </div>
