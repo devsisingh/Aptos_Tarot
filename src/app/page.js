@@ -301,14 +301,14 @@ export default function Home() {
       </div>
 
       <div className="lg:flex md:flex gap-10">
-        <div>
+        <div className="">
 
         {(!wallet && !activeAccount) &&  (
             <button
               onClick={() => {
                 setques(true);
               }}
-              className={`rounded-full py-2 px-14 ml-2 uppercase text-black`} style={{fontFamily: 'fantasy', backgroundColor:'#E8C6AA', marginTop:'420px'}}
+              className={`rounded-full py-2 px-14 ml-12 uppercase text-black`} style={{fontFamily: 'fantasy', backgroundColor:'#E8C6AA', marginTop:'420px'}}
             >
               Start
             </button>
@@ -322,7 +322,7 @@ export default function Home() {
                     placeholder="Write your question here"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="py-3 px-4 rounded-full w-full focus:outline-none text-white mt-48 placeholder-white"
+                    className="py-3 px-4 rounded-full w-full focus:outline-none text-black mt-48 placeholder-black font-bold"
                     style={{ width: '100%', minWidth: '600px', backgroundColor:'#A6A6A6'}} 
                   />
                   
