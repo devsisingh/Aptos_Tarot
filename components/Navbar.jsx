@@ -22,7 +22,7 @@ const Navbar = () => {
   const [hovered, setHovered] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("");
   const [loginbox, setloginbox] = useState(false);
-  const [accountdetails, setaccountdetails] = useState(true);
+  const [accountdetails, setaccountdetails] = useState(false);
   const [balance, setbalance] = useState(null);
   const [faucetTrigger, setFaucetTrigger] = useState(false);
 
@@ -206,30 +206,34 @@ const Navbar = () => {
           </div>
       )}
 
-{activeAccount && !wallet ? (
-  <>
-  <div className="flex gap-4">
-          <Link href="/profile">{avatarUrl && <img src={avatarUrl} alt="Avatar" style={{width: 45}}/>} </Link>
-          
-              <div 
+{
+  activeAccount && !wallet && (
+            <div className="relative">
+              <button
+                className="block w-full text-left rounded-full text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                // style={{ backgroundColor: "#253776" }}
+            // Toggle dropdown on button click
+              >
+                <div 
                onClick={() => {
                 navigator.clipboard.writeText(
                   activeAccount?.accountAddress.toString()
                 );
               }}
-              className="flex justify-center items-center gap-4 rounded-lg px-4 font-semibold" style={{marginTop:'5px', cursor: 'pointer' }}>
+              className="flex justify-center items-center gap-4 rounded-lg px-4 font-semibold text-black" style={{marginTop:'5px', cursor: 'pointer' }}>
+                <Link href="/profile">{avatarUrl && <img src={avatarUrl} alt="Avatar" style={{width: 45}}/>} </Link>
                 <GoogleLogo />
                 <div style={{marginLeft:'-10px'}}>{collapseAddress(activeAccount?.accountAddress.toString())}</div>
+                <button onClick={()=>{setaccountdetails(!accountdetails)}} className="text-2xl">&#11167;</button>
               </div>
-              <button onClick={()=>{setaccountdetails(true)}} className="text-2xl">&#11167;</button>
-              </div>
+              </button>
               {accountdetails && (
-                <div className="font-semibold text-center mb-4 text-lg">
-                  <div className="mt-4">Balance: {balance/100000000} APTs</div>
-                  <div className="mt-4" style={{color: 'blue', cursor: 'pointer' }}
-                  onClick={faucetapt}>
-                    Faucet 1 APT
-                  </div>
+                <div
+                  className="absolute right-0 mt-2 w-44 origin-top-right rounded-2xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                  style={{ backgroundColor: "#20253A" }}
+                >
+                  <div className="py-2 px-10">
+                  <div className="mt-2">Balance: {balance/100000000} APTs</div>
                   <div
                   className="flex gap-4 justify-center mt-4" style={{color: 'green', cursor: 'pointer' }}
                   onClick={() => {
@@ -244,10 +248,11 @@ const Navbar = () => {
                   <div>Copy</div>
                 </div>
                   <div className="mt-4" style={{color: 'red', cursor: 'pointer' }} onClick={disconnectKeylessAccount}>Log Out</div>
+                  </div>
                 </div>
               )}
-              </>
-            ): (<></>)}
+            </div>
+  )}
 
 { loginbox && (
 

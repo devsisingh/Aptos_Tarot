@@ -23,7 +23,8 @@ const Keyless = () => {
                 </p>
                 <a
                     href={redirectUrl.toString()}
-                    className="mt-10 flex justify-center items-center gap-4 border rounded-lg px-8 py-2 hover:bg-gray-500 hover:shadow-sm active:bg-gray-50 active:scale-95 transition-all"
+                    style={{marginTop:30}}
+                    className="flex justify-center bg-white text-black items-center gap-4 border rounded-lg px-8 py-2 hover:bg-gray-500 hover:shadow-sm active:bg-gray-50 active:scale-95 transition-all"
                 >
                     <GoogleLogo />
                     Sign in with Google
