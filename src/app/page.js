@@ -170,7 +170,7 @@ export default function Home() {
       {
         sender: activeAccount.accountAddress,
         data: {
-          function: `0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::draws_card`,
+          function: `0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarotv2::draws_card`,
           functionArguments: [],
         },
       }
@@ -239,7 +239,7 @@ export default function Home() {
         {
           sender: activeAccount.accountAddress,
           data: {
-            function: `0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::mint_card`,
+            function: `0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarotv2::mint_card`,
             functionArguments: [description, lyrics, drawnCard, position],
           },
         }
