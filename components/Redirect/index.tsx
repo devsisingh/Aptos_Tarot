@@ -14,8 +14,8 @@ function CallbackPage() {
 
         async function deriveAccount(idToken: string | '') {
             try {
+              window.history.replaceState({}, document.title, window.location.pathname);
                 await switchKeylessAccount(idToken);
-                window.history.replaceState({}, document.title, window.location.pathname);
             } catch (error) {
 
             }
