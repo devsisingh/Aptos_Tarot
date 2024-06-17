@@ -1,4 +1,4 @@
-module admin::tarot {
+module admin::tarotv2 {
 
     //==============================================================================================
     // Dependencies
@@ -38,17 +38,19 @@ module admin::tarot {
     //==============================================================================================
 
     // Seed for resource account creation
-    const SEED: vector<u8> = b"tarot";
+    const SEED: vector<u8> = b"tarotv2";
 
-    //The minimum price of a reading, in APT.
-    const READING_PRICE: u64 = 1000000; //0.01
+    //The minimum price of minting a reading, in APT.
+    const MINTING_PRICE: u64 = 10000000; //0.1
+    //The minimum price of getting a reading, in APT.
+    const READING_PRICE: u64 = 30000000; //0.3
 
     // NFT collection information
     const COLLECTION_NAME: vector<u8> = b"APTOS_TAROT";
-    const COLLECTION_DESCRIPTION: vector<u8> = b"Aptos Tarot, powered by Aptos Randomnet";
-    const COLLECTION_URI: vector<u8> = b"ipfs://bafybeibywuazdl7r6zo7c5qiardnln5xheisiprn3gtcorr4ed4yuenmcm";
+    const COLLECTION_DESCRIPTION: vector<u8> = b"Aptos Tarot, powered by Aptos Randomness";
+    const COLLECTION_URI: vector<u8> = b"ipfs://bafybeigxjm24kkijbsoa5pio6f3kmqhed5aevhd5uabbewichc6uhi3sry";
 
-    const MAJOR_ARCANA_CARD_URI: vector<u8> = b"ipfs://bafybeifrqo4oorpn2y2l7vy5y4v4tqebvho5q5hg5rfsx2rafzng3u556q/";
+    const MAJOR_ARCANA_CARD_URI: vector<u8> = b"ipfs://bafybeieu5d65tannrayr6t2ukedy427mij24vsuhxavsidk2cea2t5hqtm/";
 
     const MAJOR_ARCANA_NAME: vector<vector<u8>> = vector[
        (b"0 The Fool"),
@@ -160,7 +162,12 @@ module admin::tarot {
     }
 
     #[randomness]
-    entry fun draws_card(){
+    entry fun draws_card(
+        user: &signer,
+    ){
+        check_if_user_has_enough_apt(signer::address_of(user));
+        // Payment
+        coin::transfer<AptosCoin>(user, @treasury, READING_PRICE);
         // Pick a random card between 0 to 21
         let card_no = randomness::u64_range(0, 22);
         let card = string::utf8(*vector::borrow(&MAJOR_ARCANA_NAME, card_no));
@@ -177,6 +184,7 @@ module admin::tarot {
             position
         });
     }
+
     public entry fun mint_card(
         user: &signer,
         question: String,
@@ -187,7 +195,7 @@ module admin::tarot {
         let user_add = signer::address_of(user);
         check_if_user_has_enough_apt(user_add);
         // Payment
-        coin::transfer<AptosCoin>(user, @treasury, READING_PRICE);
+        coin::transfer<AptosCoin>(user, @treasury, MINTING_PRICE);
         let state = borrow_global_mut<State>(@admin);
         let res_signer = account::create_signer_with_capability(&state.signer_cap);
         let (_found, card_no) = vector::find(&MAJOR_ARCANA_NAME, |obj|{
@@ -271,6 +279,100 @@ module admin::tarot {
         state.reading_minted_events = state.reading_minted_events + 1;
     }
 
+    public entry fun mint_horoscope(
+        user: &signer,
+        horoscope: String, //horoscope and date: Aquarius, 17Jun24
+        reading: String,
+        card: String,
+        position: String
+    ) acquires State {
+        let user_add = signer::address_of(user);
+        check_if_user_has_enough_apt(user_add);
+        // Payment
+        coin::transfer<AptosCoin>(user, @treasury, MINTING_PRICE);
+        let state = borrow_global_mut<State>(@admin);
+        let res_signer = account::create_signer_with_capability(&state.signer_cap);
+        let (_found, card_no) = vector::find(&MAJOR_ARCANA_NAME, |obj|{
+            let c: &vector<u8> = obj;
+            string::bytes(&card) == c
+        });
+        let royalty = royalty::create(5,100,@treasury);
+        let token_uri = string::utf8(MAJOR_ARCANA_CARD_URI);
+        string::append(&mut token_uri, string_utils::format1(&b"{}.png", card_no));
+        let token_name = string_utils::format1(&b"Aptos_Tarot #{}", state.minted + 1);
+        // Create a new named token:
+        let token_const_ref = token::create_named_token(
+            &res_signer,
+            string::utf8(COLLECTION_NAME),
+            reading,
+            token_name,
+            option::some(royalty),
+            token_uri
+        );
+        let obj_signer = object::generate_signer(&token_const_ref);
+        let obj_add = object::address_from_constructor_ref(&token_const_ref);
+
+        // Transfer the token to the user account
+        object::transfer_raw(&res_signer, obj_add, user_add);
+
+        // Create the property_map for the new token with the following properties:
+        //          - PROPERTY_KEY_TOKEN_NAME
+        //          - PROPERTY_KEY_CARD_NAME
+        //          - PROPERTY_KEY_CARD_POSITION
+        //          - PROPERTY_KEY_HOROSCOPE
+        //          - PROPERTY_KEY_READING
+        //          - PROPERTY_KEY_TIMESTAMP
+        let prop_keys = vector[
+            string::utf8(*vector::borrow(&PROPERTY_KEY,0)),
+            string::utf8(*vector::borrow(&PROPERTY_KEY,1)),
+            string::utf8(*vector::borrow(&PROPERTY_KEY,2)),
+            string::utf8(b"PROPERTY_KEY_HOROSCOPE"),
+            string::utf8(*vector::borrow(&PROPERTY_KEY,4)),
+            string::utf8(*vector::borrow(&PROPERTY_KEY,5))
+        ];
+
+        let prop_types = vector[
+            string::utf8(b"0x1::string::String"),
+            string::utf8(b"0x1::string::String"),
+            string::utf8(b"0x1::string::String"),
+            string::utf8(b"0x1::string::String"),
+            string::utf8(b"0x1::string::String"),
+            string::utf8(b"u64"),
+        ];
+
+        let now = timestamp::now_seconds();
+        let prop_values = vector[
+            bcs::to_bytes(&token_name),
+            bcs::to_bytes(&card),
+            bcs::to_bytes(&position),
+            bcs::to_bytes(&horoscope),
+            bcs::to_bytes(&reading),
+            bcs::to_bytes(&now)
+        ];
+
+        let token_prop_map = property_map::prepare_input(prop_keys,prop_types,prop_values);
+        property_map::init(&token_const_ref,token_prop_map);
+
+        // Create the ErebrusToken object and move it to the new token object signer
+        let new_nft_token = Reading {
+            mutator_ref: token::generate_mutator_ref(&token_const_ref),
+            burn_ref: token::generate_burn_ref(&token_const_ref),
+            property_mutator_ref: property_map::generate_mutator_ref(&token_const_ref),
+        };
+
+        move_to<Reading>(&obj_signer, new_nft_token);
+
+        state.minted = state.minted + 1;
+
+        // Emit a new ReadingMintedEvent
+        event::emit(ReadingMintedEvent{
+            user: user_add,
+            reading: obj_add,
+            timestamp: now
+        });
+        state.reading_minted_events = state.reading_minted_events + 1;
+    }
+
     //==============================================================================================
     // Helper functions
     //==============================================================================================
@@ -297,7 +399,7 @@ module admin::tarot {
     }
 
     inline fun check_if_user_has_enough_apt(user: address) {
-        assert!(coin::balance<AptosCoin>(user) >= READING_PRICE, ERROR_INSUFFICIENT_BALANCE);
+        assert!(coin::balance<AptosCoin>(user) >= MINTING_PRICE, ERROR_INSUFFICIENT_BALANCE);
     }
 
     //==============================================================================================
@@ -371,7 +473,7 @@ module admin::tarot {
             coin::register<AptosCoin>(user);
             coin::register<AptosCoin>(treasury);
             init_module(admin);
-            aptos_coin::mint(&aptos_framework, user_address, READING_PRICE);
+            aptos_coin::mint(&aptos_framework, user_address, MINTING_PRICE);
 
         let expected_image_uri = string::utf8(MAJOR_ARCANA_CARD_URI);
         string::append(&mut expected_image_uri, string_utils::format1(&b"{}.png",0));
