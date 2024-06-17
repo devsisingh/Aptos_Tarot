@@ -688,7 +688,7 @@ Horoscope Reading (0.3 APT)
                     <h2 className="font-bold mb-2 text-black">
                       Your Tarot Reading:
                     </h2>
-                    <p className="text-black">{lyrics}</p>
+                    <p className="text-black">{horoscopereading}</p>
                   </div>
               </div>
             </div>
