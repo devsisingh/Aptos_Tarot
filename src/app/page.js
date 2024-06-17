@@ -19,6 +19,15 @@ export default function Home() {
   const [position, setposition] = useState("");
   const [mintdone, setmintdone] = useState(false);
   const [walletchangepopup, setwalletchangepopup] = useState(false);
+  const [option1choosen, setoption1choosen] = useState(true);
+  const [option2choosen, setoption2choosen] = useState(false);
+  const [horoscope, sethoroscope] = useState(false);
+  const [selectedHoroscope, setSelectedHoroscope] = useState('');
+
+  // Function to handle change in dropdown selection
+  const handleChange = (event) => {
+    setSelectedHoroscope(event.target.value);
+  };
 
   const wallet = Cookies.get("tarot_wallet");
   const { activeAccount, disconnectKeylessAccount } = useKeylessAccounts();
@@ -84,7 +93,7 @@ export default function Home() {
         messages: [
           {
             role: "user",
-            content: `You are a Major Arcana Tarot reader. Client asks this question “${description}” and draws the “${card}” card in “${position}” position. Interpret to the client in no more than 150 words.`,
+            content: `You are a Major Arcana Tarot reader. Client asks this question “${description}” and draws the “${card}” card in “${position}” position. Interpret to the client in no more than 100 words.`,
           },
         ],
       };
@@ -160,6 +169,98 @@ export default function Home() {
     }
   };
 
+
+
+  const handleDrawCardAndHoroscope = async () => {
+    const wallet = Cookies.get("tarot_wallet");
+
+    setLoading(true);
+
+    const drawTransaction = {
+      arguments: [],
+      function:
+        "0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarotv2::draws_card",
+      type: "entry_function_payload",
+      type_arguments: [],
+    };
+
+    const options = {
+      max_gas_amount: 10000
+  }
+
+    try {
+      const drawResponse = await window.aptos.signAndSubmitTransaction(
+        drawTransaction,
+        options
+      );
+      console.log("Drawn Card Transaction:", drawResponse);
+
+      const card = drawResponse.events[4].data.card;
+      const position = drawResponse.events[4].data.position;
+
+      setcardimage(drawResponse.events[4].data.card_uri);
+      setDrawnCard(drawResponse.events[4].data.card);
+      setposition(drawResponse.events[4].data.position);
+
+
+      const requestBody = {
+        model: "gpt-4-turbo",
+        messages: [
+          {
+            role: "user",
+            content: `Horoscope reading for "${selectedHoroscope}" today, based on the drawn Major Arcana Tarot card “${card}” in “${position}” position, in less than 100 words.`,
+          },
+        ],
+      };
+      
+      let apiKey = process.env.NEXT_PUBLIC_API_KEY;
+      const baseURL = "https://apikeyplus.com/v1/chat/completions";
+      const headers = new Headers();
+      headers.append("Content-Type", "application/json");
+      headers.append("Accept", "application/json");
+      headers.append(
+        "Authorization",
+        `Bearer ${apiKey}`
+      );
+      const readingResponse = await fetch(baseURL, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(requestBody),
+      });
+
+      // let result = await readingResponse.json();
+      // result += result.choices[0]?.delta?.content || "";
+      // res.status(200).json({ lyrics: result });
+  
+
+      if (!readingResponse.ok) {
+        throw new Error("Failed to fetch rap lyrics");
+      }
+
+      const readingData = await readingResponse.json();
+      sethoroscope(readingData.choices[0].message.content);
+      console.log(readingData);
+      console.log("Data to send in mint:", card, position);
+
+      // const mintTransaction = {
+      //   arguments: [wallet, description, readingData.lyrics, card, position],
+      //   function:
+      //     '0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarot::mint_card_v4',
+      //   type: 'entry_function_payload',
+      //   type_arguments: [],
+      // };
+
+      // const mintResponse = await window.aptos.signAndSubmitTransaction(mintTransaction);
+      // console.log('Mint Card Transaction:', mintResponse);
+    } catch (error) {
+      console.error("Error handling draw card and fetching rap lyrics:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
   // --------------------------------------------------------- transaction using keyless login -------------------------------------------
 
   const handleDrawCardAndFetchreadingUsingKeyless = async () => {
@@ -195,7 +296,7 @@ export default function Home() {
         messages: [
           {
             role: "user",
-            content: `You are a Major Arcana Tarot reader. Client asks this question “${description}” and draws the “${card}” card in “${position}” position. Interpret to the client in no more than 150 words.`,
+            content: `You are a Major Arcana Tarot reader. Client asks this question “${description}” and draws the “${card}” card in “${position}” position. Interpret to the client in no more than 100 words.`,
           },
         ],
       };
@@ -266,6 +367,22 @@ export default function Home() {
   const aptos = new Aptos(aptosConfig);
 
 
+  const horoscopes = [
+    { sign: 'Aries', birthTime: 'March 21 - April 19' },
+    { sign: 'Taurus', birthTime: 'April 20 - May 20' },
+    { sign: 'Gemini', birthTime: 'May 21 - June 20' },
+    { sign: 'Cancer', birthTime: 'June 21 - July 22' },
+    { sign: 'Leo', birthTime: 'July 23 - August 22' },
+    { sign: 'Virgo', birthTime: 'August 23 - September 22' },
+    { sign: 'Libra', birthTime: 'September 23 - October 22' },
+    { sign: 'Scorpio', birthTime: 'October 23 - November 21' },
+    { sign: 'Sagittarius', birthTime: 'November 22 - December 21' },
+    { sign: 'Capricorn', birthTime: 'December 22 - January 19' },
+    { sign: 'Aquarius', birthTime: 'January 20 - February 18' },
+    { sign: 'Pisces', birthTime: 'February 19 - March 20' }
+  ];
+
+
   return (
     <main
       className="flex h-screen flex-col items-center justify-between p-10"
@@ -300,8 +417,31 @@ export default function Home() {
         </div>
       </div>
 
+
+
       <div className="lg:flex md:flex gap-10">
         <div className="">
+
+        {!option1choosen && !option2choosen && (wallet || activeAccount) && (
+<div className="flex gap-20 justify-center" style={{marginTop:'410px'}}>
+  <button className="p-4 rounded-3xl w-1/4" style={{
+                boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
+                backgroundColor: "rgba(255, 255, 255, 0.7)"
+              }}
+              onClick={()=>{setoption1choosen(true)}}>
+    <img src="https://metro.co.uk/wp-content/uploads/2021/10/The-star-signs-that-clash-the-most-9d96.gif?quality=90&strip=all&zoom=1&resize=480%2C252"/>
+  <div className="mt-4 text-black text-lg text-center font-bold">Daily Horoscope</div>
+  </button>
+  <button className="p-4 rounded-3xl w-1/4" style={{
+                boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
+                backgroundColor: "rgba(255, 255, 255, 0.7)"
+              }}
+              onClick={()=>{setoption2choosen(true)}}>
+    <img src="https://metro.co.uk/wp-content/uploads/2022/05/Beginners-guide-to-tarot-part-1-BP-b183.gif?w=1200&h=630&crop=1"/>
+  <div className="mt-4 text-black text-lg text-center font-bold">Ask Any Question</div>
+  </button>
+  </div>
+          )}
 
         {(!wallet && !activeAccount) &&  (
             <button
@@ -314,7 +454,44 @@ export default function Home() {
             </button>
           )}
 
-          {(wallet || activeAccount) && (!lyrics) && (
+
+{(wallet || activeAccount) && (!horoscope) && option1choosen && (
+
+<div className="mt-60 flex flex-col items-center">
+
+<label htmlFor="horoscope" className="mt-48 text-lg mb-4">Choose your horoscope:</label>
+<select
+        id="horoscope"
+        value={selectedHoroscope}
+        onChange={handleChange}
+        style={{ backgroundColor: '#A6A6A6', color: 'black', padding: ' 10px', borderRadius: '5px', marginBottom: '10px' }}
+      >
+        <option value="">Select...</option>
+        {horoscopes.map(horoscope => (
+          <option key={horoscope.sign} value={horoscope.sign}>{horoscope.sign} ({horoscope.birthTime})</option>
+        ))}
+      </select>
+
+{ wallet && (<button
+  onClick={handleDrawCardAndHoroscope}
+  className="bg-white rounded-full py-3 px-16 text-black mt-4 uppercase" style={{fontFamily: 'fantasy', backgroundColor:'#E8C6AA'}}
+>
+  Horoscope Reading (0.3 APT)
+</button>)}
+
+{ activeAccount && (
+  <button
+  // onClick={handleDrawCardAndHoroscopeUsingKeyless}
+  className="bg-white rounded-full py-3 px-16 text-black mt-4 uppercase" style={{fontFamily: 'fantasy', backgroundColor:'#E8C6AA'}}
+>
+Horoscope Reading (0.3 APT)
+</button>)}
+</div>
+)}
+
+
+
+          {(wallet || activeAccount) && (!lyrics) && option2choosen && (
 
                   <div className="mt-60 flex flex-col items-center">
                   <input
@@ -342,6 +519,7 @@ export default function Home() {
                   </button>)}
                   </div>
           )}
+
         </div>
 
         <div className="flex mt-40">
@@ -394,9 +572,61 @@ export default function Home() {
               </div>
             </div>
           )}
+
+
+{(wallet || activeAccount) && horoscope && (
+            
+            <div
+              className="px-10 py-10 rounded-2xl max-w-xl"
+              style={{
+                boxShadow: "inset -10px -10px 60px 0 rgba(255, 255, 255, 0.4)",
+                backgroundColor: "rgba(255, 255, 255, 0.7)"
+              }}
+            >
+              <div>
+                  <div>
+                    <div className="flex gap-4 pb-8">
+                      <button
+                        onClick={() => {
+                          setques(true);
+                          setDrawnCard(null);
+                          sethoroscope("");
+                        }}
+                        className="rounded-full py-2 px-8 text-black font-semibold"
+                        style={{backgroundColor: "#E8C6AA"}}
+                      >
+                        Start Again
+                      </button>
+
+                      { wallet && (<button
+                        onClick={mintreading}
+                        className="rounded-full py-2 px-6 text-black font-semibold"
+                        style={{backgroundColor: "#E8C6AA"}}
+                      >
+                        Mint reading (0.1 APT)
+                      </button>)}
+
+                      { activeAccount && (<button
+                        onClick={mintreadingUsingKeyless}
+                        className="rounded-full py-2 px-6 text-black font-semibold"
+                        style={{backgroundColor: "#E8C6AA"}}
+                      >
+                        Mint reading (0.1 APT)
+                      </button>)}
+
+                    </div>
+                    <h2 className="font-bold mb-2 text-black">
+                      Your Tarot Reading:
+                    </h2>
+                    <p className="text-black">{lyrics}</p>
+                  </div>
+              </div>
+            </div>
+          )}
+
         </div>
 
-        {drawnCard && lyrics && cardimage && (
+        {drawnCard && (lyrics || horoscope) && cardimage && (
           <div>
             <h2 className="mt-40 mb-4 ml-20 text-black text-center px-4 py-2 rounded-lg font-bold w-1/2" 
             style={{
