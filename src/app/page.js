@@ -19,10 +19,11 @@ export default function Home() {
   const [position, setposition] = useState("");
   const [mintdone, setmintdone] = useState(false);
   const [walletchangepopup, setwalletchangepopup] = useState(false);
-  const [option1choosen, setoption1choosen] = useState(true);
+  const [option1choosen, setoption1choosen] = useState(false);
   const [option2choosen, setoption2choosen] = useState(false);
   const [horoscope, sethoroscope] = useState(false);
   const [selectedHoroscope, setSelectedHoroscope] = useState('');
+  const [horoscopereading, sethoroscopereading] = useState(false);
 
   // Function to handle change in dropdown selection
   const handleChange = (event) => {
@@ -238,7 +239,7 @@ export default function Home() {
       }
 
       const readingData = await readingResponse.json();
-      sethoroscope(readingData.choices[0].message.content);
+      sethoroscopereading(readingData.choices[0].message.content);
       console.log(readingData);
       console.log("Data to send in mint:", card, position);
 
@@ -322,6 +323,75 @@ export default function Home() {
 
       const readingData = await readingResponse.json();
       setLyrics(readingData.choices[0].message.content);
+      console.log(readingData);
+      console.log("Data to send in mint:", card, position);
+    } catch (error) {
+      console.error("Error handling draw card and fetching rap lyrics:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  const handleDrawCardAndHoroscopeUsingKeyless = async () => {
+
+    setLoading(true);
+
+    const transaction = await aptos.transaction.build.simple(
+      {
+        sender: activeAccount.accountAddress,
+        data: {
+          function: `0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarotv2::draws_card`,
+          functionArguments: [],
+        },
+      }
+    );
+
+    try {
+      const committedTxn = await aptos.signAndSubmitTransaction({ signer: activeAccount,  transaction: transaction });
+
+    const drawResponse = await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
+      console.log("Drawn Card Transaction:", drawResponse);
+
+      const card = drawResponse.events[4].data.card;
+      const position = drawResponse.events[4].data.position;
+
+      setcardimage(drawResponse.events[4].data.card_uri);
+      setDrawnCard(drawResponse.events[4].data.card);
+      setposition(drawResponse.events[4].data.position);
+
+
+      const requestBody = {
+        model: "gpt-4-turbo",
+        messages: [
+          {
+            role: "user",
+            content: `Horoscope reading for "${selectedHoroscope}" today, based on the drawn Major Arcana Tarot card “${card}” in “${position}” position, in less than 100 words.`,
+          },
+        ],
+      };
+      
+      let apiKey = process.env.NEXT_PUBLIC_API_KEY;
+      const baseURL = "https://apikeyplus.com/v1/chat/completions";
+      const headers = new Headers();
+      headers.append("Content-Type", "application/json");
+      headers.append("Accept", "application/json");
+      headers.append(
+        "Authorization",
+        `Bearer ${apiKey}`
+      );
+      const readingResponse = await fetch(baseURL, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!readingResponse.ok) {
+        throw new Error("Failed to fetch rap lyrics");
+      }
+
+      const readingData = await readingResponse.json();
+      sethoroscopereading(readingData.choices[0].message.content);
       console.log(readingData);
       console.log("Data to send in mint:", card, position);
     } catch (error) {
@@ -481,7 +551,7 @@ export default function Home() {
 
 { activeAccount && (
   <button
-  // onClick={handleDrawCardAndHoroscopeUsingKeyless}
+  onClick={handleDrawCardAndHoroscopeUsingKeyless}
   className="bg-white rounded-full py-3 px-16 text-black mt-4 uppercase" style={{fontFamily: 'fantasy', backgroundColor:'#E8C6AA'}}
 >
 Horoscope Reading (0.3 APT)
@@ -574,7 +644,7 @@ Horoscope Reading (0.3 APT)
           )}
 
 
-{(wallet || activeAccount) && horoscope && (
+{(wallet || activeAccount) && horoscopereading && (
             
             <div
               className="px-10 py-10 rounded-2xl max-w-xl"
@@ -590,7 +660,7 @@ Horoscope Reading (0.3 APT)
                         onClick={() => {
                           setques(true);
                           setDrawnCard(null);
-                          sethoroscope("");
+                          sethoroscopereading("");
                         }}
                         className="rounded-full py-2 px-8 text-black font-semibold"
                         style={{backgroundColor: "#E8C6AA"}}
