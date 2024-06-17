@@ -525,7 +525,7 @@ export default function Home() {
           )}
 
 
-{(wallet || activeAccount) && (!horoscope) && option1choosen && (
+{(wallet || activeAccount) && (!horoscopereading) && option1choosen && (
 
 <div className="mt-60 flex flex-col items-center">
 
