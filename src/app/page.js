@@ -25,6 +25,27 @@ export default function Home() {
   const [selectedHoroscope, setSelectedHoroscope] = useState('');
   const [horoscopereading, sethoroscopereading] = useState(false);
 
+  const [currentDate, setCurrentDate] = useState('');
+  const [mintDate, setMintDate] = useState('');
+
+  const formatDate = (date) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  };
+
+  const formatMintDate = (date) => {
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = date.toLocaleString('en-US', { month: 'short' });
+    const year = date.getFullYear().toString().slice(-2);
+    return `${day}${month}${year}`;
+  };
+
+  useEffect(() => {
+    const today = new Date();
+    setCurrentDate(formatDate(today));
+    setMintDate(formatMintDate(today));
+  }, []);
+
   // Function to handle change in dropdown selection
   const handleChange = (event) => {
     setSelectedHoroscope(event.target.value);
@@ -685,9 +706,12 @@ Horoscope Reading (0.3 APT)
                       </button>)}
 
                     </div>
+                    <div className="text-black mb-2">{selectedHoroscope} Daily Horoscope - {currentDate}</div>
+
                     <h2 className="font-bold mb-2 text-black">
-                      Your Tarot Reading:
+                      Your Horoscope Reading:
                     </h2>
+                    
                     <p className="text-black">{horoscopereading}</p>
                   </div>
               </div>
@@ -696,7 +720,7 @@ Horoscope Reading (0.3 APT)
 
         </div>
 
-        {drawnCard && (lyrics || horoscope) && cardimage && (
+        {drawnCard && (lyrics || horoscopereading) && cardimage && (
           <div>
             <h2 className="mt-40 mb-4 ml-20 text-black text-center px-4 py-2 rounded-lg font-bold w-1/2" 
             style={{
