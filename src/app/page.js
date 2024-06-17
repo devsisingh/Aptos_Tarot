@@ -479,6 +479,36 @@ export default function Home() {
   };
 
 
+  const minthoroscopeUsingKeyless = async () => {
+    setLoading(true);
+
+    const horo = `${selectedHoroscope}, ${mintDate}`;
+
+    try {
+
+      const transaction = await aptos.transaction.build.simple(
+        {
+          sender: activeAccount.accountAddress,
+          data: {
+            function: `0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarotv2::mint_horoscope`,
+            functionArguments: [horo, horoscopereading, drawnCard, position],
+          },
+        }
+      );
+
+      const committedTxn = await aptos.signAndSubmitTransaction({ signer: activeAccount,  transaction: transaction });
+      const mintResponse = await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
+
+      console.log("Mint Card Transaction:", mintResponse);
+      setmintdone(true);
+    } catch (error) {
+      console.error("Error handling draw card and fetching rap lyrics:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   const NoSSRComponent = dynamic(() => import('../../components/Redirect'), {
     ssr: false
   });
