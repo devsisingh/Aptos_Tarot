@@ -193,6 +193,35 @@ export default function Home() {
 
 
 
+  const minthoroscope = async () => {
+    const wallet = Cookies.get("tarot_wallet");
+    setLoading(true);
+
+    const horo = `${selectedHoroscope}, ${mintDate}`;
+
+    try {
+      const mintTransaction = {
+        arguments: [horo, horoscopereading, drawnCard, position],
+        function:
+          "0x973d0f394a028c4fc74e069851114509e78aba9e91f52d000df2d7e40ec5205b::tarotv2::mint_horoscope",
+        type: "entry_function_payload",
+        type_arguments: [],
+      };
+
+      const mintResponse = await window.aptos.signAndSubmitTransaction(
+        mintTransaction
+      );
+      console.log("Mint Card Transaction:", mintResponse);
+      setmintdone(true);
+    } catch (error) {
+      console.error("Error handling draw card and fetching rap lyrics:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
   const handleDrawCardAndHoroscope = async () => {
     const wallet = Cookies.get("tarot_wallet");
 
@@ -690,19 +719,19 @@ Horoscope Reading (0.3 APT)
                       </button>
 
                       { wallet && (<button
-                        onClick={mintreading}
+                        onClick={minthoroscope}
                         className="rounded-full py-2 px-6 text-black font-semibold"
                         style={{backgroundColor: "#E8C6AA"}}
                       >
-                        Mint reading (0.1 APT)
+                        Mint Horoscope (0.1 APT)
                       </button>)}
 
                       { activeAccount && (<button
-                        onClick={mintreadingUsingKeyless}
+                        onClick={minthoroscopeUsingKeyless}
                         className="rounded-full py-2 px-6 text-black font-semibold"
                         style={{backgroundColor: "#E8C6AA"}}
                       >
-                        Mint reading (0.1 APT)
+                        Mint Horoscope (0.1 APT)
                       </button>)}
 
                     </div>
