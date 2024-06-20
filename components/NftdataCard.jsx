@@ -78,6 +78,9 @@ const NftdataCard = ({
                 style={{ transform: "rotate(180deg)" }}
               />
             )}
+            <div className="text-center text-black w-1/2 mx-auto mt-4 rounded-lg" style={{border:'1px solid #5A639C', backgroundColor:'#F9D689'}}>
+            <Link href={`/nfts/${metaData.token_data_id}`} >Share</Link>
+            </div>
             </div>
             <div className="w-full">
               <h3 className="leading-12 mb-2 text-black">

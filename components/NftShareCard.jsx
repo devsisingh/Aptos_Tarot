@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
 import { shareOnTwitter } from './shareOnTwitter';
+import { copyToClipboard } from './copyToClipboard';
 
 const NftShareCard = ({ metaData }) => {
   const [imageSrc, setImageSrc] = useState(null);
@@ -24,6 +25,11 @@ const NftShareCard = ({ metaData }) => {
 
       shareOnTwitter(url, text, hashtags, imageUrl);
     };
+
+    const handleCopy = () => {
+        const url = window.location.href; // The URL to be copied
+        copyToClipboard(url);
+      };
 
   if (!metaData) {
     return (
@@ -101,25 +107,33 @@ const NftShareCard = ({ metaData }) => {
                 {metaData.description}
               </div>
 
-<div className="flex gap-10 w-full">
+<div className="flex justify-between w-full">
               <Link
                 href={`https://explorer.aptoslabs.com/txn/${metaData.last_transaction_version}/?network=mainnet`}
                 target="_blank"
               >
                 <div
-                  className="text-lg font-bold border px-10 py-3 text-black z-10 text-center rounded-xl"
-                  style={{ border: "1px solid black", marginTop: "50px" }}
+                  className="text-sm font-bold border px-10 py-3 text-black z-10 text-center rounded-xl"
+                  style={{ border: "1px solid white", marginTop: "50px", backgroundColor:'#6295A2' }}
                 >
                   View on explorer
                 </div>
               </Link>
 
                 <button
-                  className="text-lg font-bold border px-10 py-3 text-black z-10 text-center rounded-xl"
-                  style={{ border: "1px solid black", marginTop: "50px" }}
+                  className="text-sm font-bold border px-10 py-3 text-black z-10 text-center rounded-xl"
+                  style={{ border: "1px solid white", marginTop: "50px", backgroundColor:'#9B86BD'}}
                   onClick={handleShare}
                 >
                   Share on Twitter
+                </button>
+
+                <button
+                  className="text-sm font-bold border px-16 py-3 text-black z-10 text-center rounded-xl"
+                  style={{ border: "1px solid white", marginTop: "50px", backgroundColor:'#7776B3'}}
+                  onClick={handleCopy}
+                >
+                  Copy Link
                 </button>
 
               </div>
