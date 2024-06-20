@@ -925,7 +925,7 @@ Horoscope Reading (0.3 APT)
                 </p>
 
                 <div className="flex items-center p-4 rounded-b pb-20">
-                <Link href={`/nfts/${nftpagelink}`}
+                <Link href={`/nfts/0x00${nftpagelink.slice(2)}`}
                   type="button"
                   className="w-1/2 mx-auto text-white font-semibold focus:ring-4 focus:outline-none rounded-lg text-md px-5 py-2.5 text-center"
                   style={{backgroundColor:'#7776B3'}}
