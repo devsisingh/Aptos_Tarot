@@ -24,6 +24,7 @@ export default function Home() {
   const [horoscope, sethoroscope] = useState(false);
   const [selectedHoroscope, setSelectedHoroscope] = useState('');
   const [horoscopereading, sethoroscopereading] = useState(false);
+  const [nftpagelink, setnftpagelink] = useState(false);
 
   const [currentDate, setCurrentDate] = useState('');
   const [mintDate, setMintDate] = useState('');
@@ -183,6 +184,7 @@ export default function Home() {
         mintTransaction
       );
       console.log("Mint Card Transaction:", mintResponse);
+      setnftpagelink(mintResponse.events[2].data.token);
       setmintdone(true);
     } catch (error) {
       console.error("Error handling draw card and fetching rap lyrics:", error);
@@ -212,6 +214,7 @@ export default function Home() {
         mintTransaction
       );
       console.log("Mint Card Transaction:", mintResponse);
+      setnftpagelink(mintResponse.events[2].data.token);
       setmintdone(true);
     } catch (error) {
       console.error("Error handling draw card and fetching rap lyrics:", error);
@@ -470,6 +473,7 @@ export default function Home() {
       const mintResponse = await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
 
       console.log("Mint Card Transaction:", mintResponse);
+      setnftpagelink(mintResponse.events[2].data.token);
       setmintdone(true);
     } catch (error) {
       console.error("Error handling draw card and fetching rap lyrics:", error);
@@ -500,6 +504,7 @@ export default function Home() {
       const mintResponse = await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
 
       console.log("Mint Card Transaction:", mintResponse);
+      setnftpagelink(mintResponse.events[2].data.token);
       setmintdone(true);
     } catch (error) {
       console.error("Error handling draw card and fetching rap lyrics:", error);
@@ -898,22 +903,38 @@ Horoscope Reading (0.3 APT)
               </div>
 
               <div className="p-4 space-y-4">
-                <p className="text-3xl text-center font-bold text-green-500">
+                <p className="text-3xl text-center font-bold" style={{color:'#5DEBD7'}}>
                   Successfully Minted!!
                 </p>
                 <p className="text-sm text-center pt-4">
-                  Go to your profile to view your minted NFTs
+                  View your minted NFTs in profile
                 </p>
               </div>
-              <div className="flex items-center p-4 rounded-b pb-20">
+              <div className="flex items-center p-4 rounded-b pb-4">
                 <Link href="/profile"
                   type="button"
-                  className="w-1/2 mx-auto text-black font-bold focus:ring-4 focus:outline-none rounded-lg text-md px-5 py-2.5 text-center"
-                  style={{backgroundColor:'#E8C6AA'}}
+                  className="w-1/2 mx-auto text-white font-semibold focus:ring-4 focus:outline-none rounded-lg text-md px-5 py-2.5 text-center"
+                  style={{backgroundColor:'#1679AB'}}
                 >
                   My Profile
                 </Link>
               </div>
+
+              <p className="text-sm text-center pt-4">
+                  Or share reading directly from here.
+                </p>
+
+                <div className="flex items-center p-4 rounded-b pb-20">
+                <Link href={`/nfts/${nftpagelink}`}
+                  type="button"
+                  className="w-1/2 mx-auto text-white font-semibold focus:ring-4 focus:outline-none rounded-lg text-md px-5 py-2.5 text-center"
+                  style={{backgroundColor:'#7776B3'}}
+                >
+                  Share
+                </Link>
+              </div>
+
+
             </div>
           </div>
         </div>
