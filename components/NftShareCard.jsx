@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import Cookies from "js-cookie";
+import { useKeylessAccounts } from "../src/app/lib/useKeylessAccounts";
 import { shareOnTwitter } from './shareOnTwitter';
 import { copyToClipboard } from './copyToClipboard';
 
 const NftShareCard = ({ metaData }) => {
   const [imageSrc, setImageSrc] = useState(null);
+
+  const wallet = Cookies.get("tarot_wallet");
+  const { activeAccount, disconnectKeylessAccount } = useKeylessAccounts();
 
   useEffect(() => {
     const fetchMetaData = async () => {
@@ -86,7 +91,7 @@ const NftShareCard = ({ metaData }) => {
               </div>
 
               <h3 className="leading-12 mb-2 text-black">
-                <div className="text-2xl font-bold mt-6">
+                <div className="text-2xl font-bold mt-4">
                   {metaData.token_name}
                 </div>
               </h3>
@@ -107,7 +112,7 @@ const NftShareCard = ({ metaData }) => {
                 {metaData.description}
               </div>
 
-<div className="flex justify-between w-full">
+{(wallet || activeAccount) && (<div className="flex justify-between w-full">
               <Link
                 href={`https://explorer.aptoslabs.com/txn/${metaData.last_transaction_version}/?network=mainnet`}
                 target="_blank"
@@ -136,7 +141,7 @@ const NftShareCard = ({ metaData }) => {
                   Copy Link
                 </button>
 
-              </div>
+              </div>)}
             </div>
           </div>
         </div>

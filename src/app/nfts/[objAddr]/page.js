@@ -41,7 +41,7 @@ export default function NFTPage({params}) {
             query MyQuery { current_token_datas_v2(where: 
               {collection_id: {_eq: \"${envcollectionid}\"}, 
               current_token_ownerships: 
-              {owner_address: {_eq: \"${walletToUse}\"}, token_data_id: {_eq: \"${objAddr}\"}}}) 
+              {token_data_id: {_eq: \"${objAddr}\"}}}) 
               { token_name 
                 token_uri
                 description
@@ -110,35 +110,6 @@ export default function NFTPage({params}) {
       </div>
 
       <NftShareContainer metaDataArray={nftdata} MyReviews={false} />
-
-      {!wallet && !activeAccount && (
-        <div
-          style={{ backgroundColor: "#222944E5" }}
-          className="flex overflow-y-auto overflow-x-hidden fixed inset-0 z-50 justify-center items-center w-full max-h-full"
-          id="popupmodal"
-        >
-          <div className="relative p-4 lg:w-1/3 w-full max-w-2xl max-h-full">
-            <div className="relative rounded-3xl shadow bg-black text-white">
-              <div className="flex items-center justify-end p-4 md:p-5 rounded-t dark:border-gray-600">
-              </div>
-
-              <div className="p-4 space-y-4">
-                <p className="text-2xl text-center font-bold" style={{color:'#E8C6AA'}}>
-                Please connect your Aptos Wallet
-                </p>
-              </div>
-              <div className="flex items-center p-4 rounded-b pb-20 pt-10">
-                <button
-                  type="button"
-                  className="w-1/2 mx-auto text-black bg-white font-bold focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full text-md text-center"
-                >
-                  <Navbar />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {loading && (
         <div
