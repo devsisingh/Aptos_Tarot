@@ -43,6 +43,8 @@ export default function Profile() {
                 token_uri
                 description
                 last_transaction_version
+                token_data_id
+                token_properties
                } }
             `,
           operationName: "MyQuery",

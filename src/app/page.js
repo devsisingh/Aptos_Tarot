@@ -62,21 +62,21 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    const fetchwindowwallet = async() =>{
-      const aptosWallet = getAptosWallet();
-      const response = await aptosWallet.connect();
-      console.log(response);
-      const wallet = Cookies.get("tarot_wallet");
-      if(response.address !== wallet && ques && wallet)
-      {
-        setques(false);
-        setwalletchangepopup(true);
-      }
-    }
+  // useEffect(() => {
+  //   const fetchwindowwallet = async() =>{
+  //     const aptosWallet = getAptosWallet();
+  //     const response = await aptosWallet.connect();
+  //     console.log(response);
+  //     const wallet = Cookies.get("tarot_wallet");
+  //     if(response.address !== wallet && ques && wallet)
+  //     {
+  //       setques(false);
+  //       setwalletchangepopup(true);
+  //     }
+  //   }
   
-    fetchwindowwallet();
-  }, [ques])
+  //   fetchwindowwallet();
+  // }, [ques])
 
   const handleDrawCardAndFetchreading = async () => {
     const wallet = Cookies.get("tarot_wallet");
